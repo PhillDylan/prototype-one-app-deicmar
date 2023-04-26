@@ -18,6 +18,8 @@ import { Button, IconButton } from "@mui/material";
 import { Routes, Route, Navigate } from "react-router-dom";
 import React,{useState, useEffect} from "react";
 import { useAppThemeContext, useAppDrawerContext } from "../shared/contexts";
+import MenuIcon from '@mui/icons-material/Menu';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 export const AppRoutes = () => {
     const { toggleTheme } = useAppThemeContext();
@@ -53,8 +55,8 @@ export const AppRoutes = () => {
         path="/pagina-inicial"
         element={
           <>
-            <Button variant="contained" color="primary" onClick={toggleDrawerOpen}>Menu</Button>
-            <Button variant="contained" color="primary" onClick={toggleTheme}>Toogle Theme</Button>
+            <IconButton color="primary" onClick={toggleDrawerOpen}><MenuIcon /></IconButton>
+            <IconButton color="primary" onClick={toggleTheme}><DarkModeIcon /></IconButton>
             <input
               hidden
               accept="image/*"
@@ -83,8 +85,8 @@ export const AppRoutes = () => {
             path="/pagina-inicial2"
             element={
             <>
-                <Button variant="contained" color="primary" onClick={toggleDrawerOpen}>Menu</Button>
-                <Button variant="contained" color="primary" onClick={toggleTheme}>Toogle Theme</Button>
+                <IconButton color="primary" onClick={toggleDrawerOpen}><MenuIcon /></IconButton>
+                <IconButton color="primary" onClick={toggleTheme}><DarkModeIcon /></IconButton>
                 <input
                 hidden
                 accept="image/*"
