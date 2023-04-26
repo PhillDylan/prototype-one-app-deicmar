@@ -21,7 +21,22 @@ import { useAppThemeContext, useAppDrawerContext } from "../shared/contexts";
 
 export const AppRoutes = () => {
     const { toggleTheme } = useAppThemeContext();
-    const { toggleDrawerOpen } = useAppDrawerContext();
+    const { toggleDrawerOpen, setDrawerOptions } = useAppDrawerContext();
+    
+    useEffect(() => {
+        setDrawerOptions([
+          {
+            icon: 'home',
+            path: '/pagina-inicial',
+            label: 'Página inicial',
+          },
+          {
+            icon: 'home',
+            path: '/pagina-inicial2',
+            label: 'Página inicial2',
+          },
+        ]);
+    }, []);
 
   const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
 
@@ -63,6 +78,36 @@ export const AppRoutes = () => {
           </>
         }
       />
+
+        <Route
+            path="/pagina-inicial2"
+            element={
+            <>
+                <Button variant="contained" color="primary" onClick={toggleDrawerOpen}>Menu</Button>
+                <Button variant="contained" color="primary" onClick={toggleTheme}>Toogle Theme</Button>
+                <input
+                hidden
+                accept="image/*"
+                type="file"
+                id="imagem-input"
+                onChange={handleImagemSelecionada}
+                />
+                <label htmlFor="imagem-input">
+                <IconButton color="primary" aria-label="upload picture" component="span">
+                    <PhotoCamera />
+                </IconButton>
+                </label>
+                {imagemSelecionada ? (
+                <img
+                    src={imagemSelecionada}
+                    style={{ maxWidth: "300px", maxHeight: "300px", marginTop: "10px" }}
+                />
+                ) : (
+                <p>Nenhuma imagem selecionada.</p>
+                )}
+            </>
+            }
+        />
 
       <Route path="*" element={<Navigate to="/pagina-inicial" />} />
     </Routes>
