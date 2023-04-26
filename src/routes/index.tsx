@@ -12,33 +12,7 @@
 //    );
 //}
 
-import { PhotoCamera } from "@mui/icons-material";
-import { Button, IconButton } from "@mui/material";
-import { Routes, Route, Navigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
-import { useAppThemeContext, useAppDrawerContext } from "../shared/contexts";
-import MenuIcon from "@mui/icons-material/Menu";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-
-export const AppRoutes = () => {
-  const { toggleTheme } = useAppThemeContext();
-  const { toggleDrawerOpen, setDrawerOptions } = useAppDrawerContext();
-
-  useEffect(() => {
-    setDrawerOptions([
-      {
-        icon: "home",
-        path: "/pagina-inicial",
-        label: "Página inicial",
-      },
-      {
-        icon: "home",
-        path: "/pagina-inicial2",
-        label: "Página inicial2",
-      },
-    ]);
-  }, []);
-
+/* 
   const [imagemSelecionada, setImagemSelecionada] = useState<
     string | undefined
   >();
@@ -52,7 +26,7 @@ export const AppRoutes = () => {
     }
   };
 
-  return (
+return (
     <Routes>
       <Route
         path="/pagina-inicial"
@@ -137,6 +111,48 @@ export const AppRoutes = () => {
           </>
         }
       />
+
+      <Route path="*" element={<Navigate to="/pagina-inicial" />} />
+    </Routes>
+  );*/
+
+
+
+
+import { PhotoCamera } from "@mui/icons-material";
+import { Button, IconButton } from "@mui/material";
+import { Routes, Route, Navigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useAppThemeContext, useAppDrawerContext } from "../shared/contexts";
+import MenuIcon from "@mui/icons-material/Menu";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { Dashboard } from "../pages";
+
+export const AppRoutes = () => {
+  const { toggleTheme } = useAppThemeContext();
+  const { toggleDrawerOpen, setDrawerOptions } = useAppDrawerContext();
+
+  useEffect(() => {
+    setDrawerOptions([
+      {
+        icon: "home",
+        path: "/pagina-inicial",
+        label: "Página inicial",
+      },
+      {
+        icon: "home",
+        path: "/pagina-inicial2",
+        label: "Página inicial2",
+      },
+    ]);
+  }, []);
+
+
+
+  return (
+    <Routes>
+      <Route path="/pagina-inicial" element={<Dashboard />} />
+
 
       <Route path="*" element={<Navigate to="/pagina-inicial" />} />
     </Routes>
