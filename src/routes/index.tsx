@@ -17,10 +17,11 @@ import { PhotoCamera } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
 import { Routes, Route, Navigate } from "react-router-dom";
 import React,{useState, useEffect} from "react";
-import { useAppThemeContext } from "../shared/contexts";
+import { useAppThemeContext, useAppDrawerContext } from "../shared/contexts";
 
 export const AppRoutes = () => {
     const { toggleTheme } = useAppThemeContext();
+    const { toggleDrawerOpen } = useAppDrawerContext();
 
   const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
 
@@ -37,6 +38,7 @@ export const AppRoutes = () => {
         path="/pagina-inicial"
         element={
           <>
+            <Button variant="contained" color="primary" onClick={toggleDrawerOpen}>Menu</Button>
             <Button variant="contained" color="primary" onClick={toggleTheme}>Toogle Theme</Button>
             <input
               hidden
