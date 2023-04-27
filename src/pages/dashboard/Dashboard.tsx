@@ -11,15 +11,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 
-interface CustomProps {
-  onChange: (event: { target: { name: string; value: string } }) => void;
-  name: string;
-}
-
-
-
-
-
 export const Dashboard = () => {
     
 const [nome, setNome] = useState("");

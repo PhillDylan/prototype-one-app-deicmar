@@ -19,6 +19,11 @@ export const DarkTheme = createTheme({
         background:{
             default: '#202124',
             paper: '#303134',
+        },
+    },
+    typography:{
+        allVariants:{
+            color: 'white',
         }
     }
 })

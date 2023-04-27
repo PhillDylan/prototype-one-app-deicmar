@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import { green } from "@mui/material/colors";
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import Avatar from '@mui/material/Avatar';
-import { useAppDrawerContext } from "../../contexts";
+import { useAppDrawerContext, useAppThemeContext } from "../../contexts";
 import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
 
 
@@ -48,6 +48,8 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
     const smDown = useMediaQuery(theme.breakpoints.down('sm'));
 
     const { isDrawerOpen, toggleDrawerOpen, drawerOptions } = useAppDrawerContext();
+    const { toggleTheme } = useAppThemeContext();
+
 
     return (
         <>
@@ -78,6 +80,20 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
 
                             </List>
                         </nav>
+
+                    </Box>
+                    <Box >
+
+                    <nav aria-label="main mailbox folders">
+                        <List>
+                            <ListItemButton  onClick={toggleTheme}>
+                                <ListItemIcon>
+                                    <Icon>dark_mode</Icon>
+                                </ListItemIcon>
+                                <ListItemText primary="Alternar tema" />
+                            </ListItemButton>
+                        </List>
+                    </nav>
 
                     </Box>
 
