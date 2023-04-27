@@ -11,12 +11,22 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 
+interface CustomProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
+
+
+
+
+
 export const Dashboard = () => {
     
 const [nome, setNome] = useState("");
 const [sobrenome, setSobrenome] = useState("");
 const [cpf, setCpf] = useState("");
 const [statusEnvio, setStatusEnvio] = useState("pronto");
+const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 
     
     
@@ -25,14 +35,23 @@ const [statusEnvio, setStatusEnvio] = useState("pronto");
     string | undefined
   >();
 
-  const handleImagemSelecionada = (
+  const handleImagemSelecionada = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files && event.target.files.length > 0) {
-      const imagem = URL.createObjectURL(event.target.files[0]);
-      setImagemSelecionada(imagem);
+      const imagem = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(imagem);
+      reader.onload = () => {
+        setImagemSelecionada(URL.createObjectURL(imagem));
+        setImagemBase64(reader.result as string);
+      };
+      reader.onerror = () => {
+        console.error("Erro ao converter imagem em base64");
+      };
     }
   };
+  
     
     return(
         <>
@@ -120,6 +139,60 @@ const [statusEnvio, setStatusEnvio] = useState("pronto");
             endIcon={<SendIcon />}
             disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando"}
             onClick={async () => {
+              fetch('http://192.168.13.217:1880/api/endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  nome,
+                  sobrenome,
+                  cpf,
+                  imagem: imagemBase64,
+                  transportadora: 'Parceiras'
+                })
+            })
+            .then(response => response.json())
+            .then(data => 
+            console.log(data)
+            )
+            .catch(error => console.error(error));
+            
+          }}
+            >
+            SEND
+    </Button>
+
+    </Box>    
+          
+          
+        </LayoutBaseDePagina>
+       </>       
+    );
+};
+/*
+fetch('http://localhost:1880/api/endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    picture: buffer,
+                    name: name,
+                    cpf: cpf,
+                    transportadora: 'Parceiras'
+                })
+            })
+            .then(response => response.json())
+            .then(data => 
+            console.log(data)
+            )
+            .catch(error => console.error(error));
+    }
+    
+    */
+/*
+async () => {
                 setStatusEnvio("enviando");
                 try {
                 const resposta = await fetch("http://192.168.13.217:1880/api/endpoint", {
@@ -141,16 +214,4 @@ const [statusEnvio, setStatusEnvio] = useState("pronto");
                 console.error(erro);
                 setStatusEnvio("erro");
                 }
-            }}
-            >
-            SEND
-    </Button>
-
-    </Box>    
-          
-          
-        </LayoutBaseDePagina>
-       </>       
-    );
-};
-
+            }*/
