@@ -21,7 +21,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
   
   return( 
     <Box height='100%' display='flex' flexDirection='column' gap={1}>
-        <Box padding={1} display='flex' alignItems='center' gap={1} height={theme.spacing(smDown ? 6 : mdDown ? 8 : 12)} >
+        <Box padding={1} display='flex' alignItems='center' gap={1} height={theme.spacing(smDown ? 6 : mdDown ? 8 : 12)}  >
              
              {smDown && (
              <IconButton color="primary" onClick={toggleDrawerOpen}>
@@ -45,7 +45,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
         </Box>
         )}
         
-        <Box flex={1} overflow='auto'>
+        <Box flex={1} overflow='auto' >
           {children}
         </Box>
     </Box>

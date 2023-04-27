@@ -126,7 +126,7 @@ import React, { useState, useEffect } from "react";
 import { useAppThemeContext, useAppDrawerContext } from "../shared/contexts";
 import MenuIcon from "@mui/icons-material/Menu";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import { Dashboard } from "../pages";
+import { Dashboard, Dashboard2 } from "../pages";
 
 export const AppRoutes = () => {
   const { toggleTheme } = useAppThemeContext();
@@ -152,7 +152,7 @@ export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/pagina-inicial" element={<Dashboard />} />
-
+      <Route path="/pagina-inicial2" element={<Dashboard2 />} />
 
       <Route path="*" element={<Navigate to="/pagina-inicial" />} />
     </Routes>
