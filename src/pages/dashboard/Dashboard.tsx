@@ -1,22 +1,28 @@
 import { LayoutBaseDePagina } from "../../shared/layouts"
 import { PhotoCamera } from "@mui/icons-material";
-import { Button, IconButton } from "@mui/material";
+import { Alert, AlertTitle, Button, IconButton } from "@mui/material";
 import { Routes, Route, Navigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import { Box } from "@mui/system";
 import SendIcon from '@mui/icons-material/Send';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
 
 import MenuIcon from "@mui/icons-material/Menu";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 
+
 export const Dashboard = () => {
+const [open, setOpen] = React.useState(false);
+const [erroEnvio, setErroEnvio] = useState("");
+
     
 const [nome, setNome] = useState("");
 const [sobrenome, setSobrenome] = useState("");
 const [cpf, setCpf] = useState("");
-const [statusEnvio, setStatusEnvio] = useState("pronto");
+const [statusEnvio, setStatusEnvio] = useState("certo");
 const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 
     
@@ -42,11 +48,12 @@ const [imagemBase64, setImagemBase64] = useState<string | undefined>();
       };
     }
   };
-  
-    
+
+
     return(
         <>
         <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
+          
           <Box>
             <input
               hidden
@@ -66,6 +73,7 @@ const [imagemBase64, setImagemBase64] = useState<string | undefined>();
             </label>
             {imagemSelecionada ? (
               <img
+              sizes=""
                 src={imagemSelecionada}
                 style={{
                   maxWidth: "300px",
@@ -84,77 +92,131 @@ const [imagemBase64, setImagemBase64] = useState<string | undefined>();
           
           
            <Box
-      component="form"
-      sx={{
-        '& .MuiTextField-root': { m: 1, width: '18ch' },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <div>
-        <TextField
-            required
-            id="outlined-required"
-            label="Required"
-            defaultValue={nome}
-            onChange={(event) => setNome(event.target.value)}
-            helperText="Digite o Nome"
-            />
-            <TextField
-            required
-            id="outlined-required"
-            label="Required"
-            defaultValue={sobrenome}
-            onChange={(event) => setSobrenome(event.target.value)}
-            helperText="Digite o Sobrenome"
-            />
-            <TextField
-            id="filled-number"
-            label="Required"
-            type="number"
-            InputLabelProps={{
-                shrink: true,
+            component="form"
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '18ch' },
             }}
-            defaultValue={cpf}
-            onChange={(event) => setCpf(event.target.value)}
-            helperText="Digite o CPF"
+            noValidate
+            autoComplete="off"
+          >
+          <div>
+            <TextField
+              required
+              id="outlined-required"
+              label="Required"
+              defaultValue={nome}
+              onChange={(event) => {
+              setNome(event.target.value);
+              setStatusEnvio("certo"); 
+              }}
+              helperText="Digite o Nome"
+            />
+            <TextField
+              required
+              id="outlined-required"
+              label="Required"
+              defaultValue={sobrenome}
+              onChange={(event) => {
+                setSobrenome(event.target.value);
+                setStatusEnvio("certo"); 
+              }}
+              helperText="Digite o Sobrenome"
+            />
+            <TextField
+              id="filled-number"
+              label="Required"
+              type="number"
+              InputLabelProps={{
+                  shrink: true,
+              }}
+              defaultValue={cpf}
+              onChange={(event) => {
+                setCpf(event.target.value)
+                setStatusEnvio("certo"); 
+              }}
+              helperText="Digite o CPF"
             />
 
-      </div>
-      
-    </Box>
-       
-    <Box gap={1}>   
-      <Button
-            variant="contained"
-            endIcon={<SendIcon />}
-            disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando"}
-            onClick={async () => {
-              fetch('http://192.168.13.217:1880/api/endpoint', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  nome,
-                  sobrenome,
-                  cpf,
-                  imagem: imagemBase64,
-                  transportadora: 'Parceiras'
-                })
-            })
-            .then(response => response.json())
-            .then(data => 
-            console.log(data)
-            )
-            .catch(error => console.error(error));
-            
-          }}
-            >
-            SEND
-    </Button>
+          </div>
 
-    </Box>    
+        </Box>
+       
+      
+      <Box gap={1}>   
+        <Button
+          variant="contained"
+          endIcon={<SendIcon />}
+          disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true}
+          onClick={async () => {
+              setStatusEnvio("enviando");
+              fetch('http://192.168.13.217:1881/api/endpoint', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      nome,
+                      sobrenome,
+                      cpf,
+                      imagem: imagemBase64,
+                      transportadora: 'Parceiras'
+                  })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data);
+                  setStatusEnvio("pronto");             
+                  setNome("");
+                  setSobrenome("");
+                  setCpf("");
+              })
+              .catch(error => {
+                console.error(error);
+                setOpen(true);
+                setStatusEnvio("erro");
+                setErroEnvio(error.message); // ou outra forma de capturar o motivo do erro
+              });              
+          }}
+        >
+          {statusEnvio === "enviando" ? "ENVIANDO..." : statusEnvio === "pronto"? "ENVIADO" : statusEnvio === "erro"? "REENVIAR" : "SEND"}
+        </Button>
+      </Box>   
+
+      <Box sx={{ width: '100%' }}>
+      <Collapse in={open}>
+              <Alert
+              variant="filled"
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          <AlertTitle>Error</AlertTitle>
+          {erroEnvio}
+        </Alert>
+
+      </Collapse>
+      <Button
+        disabled={open}
+        variant="outlined"
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        Re-open
+      </Button>
+    </Box> 
           
           
         </LayoutBaseDePagina>
