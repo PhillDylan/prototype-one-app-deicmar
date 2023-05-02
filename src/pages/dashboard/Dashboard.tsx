@@ -34,22 +34,6 @@ const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
 
 
-useEffect(() => {
-  const getImage = () => {
-    const img = new Image();
-    if (file) {
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        setImage({
-          url: img.src,
-          width: img.width,
-          height: img.height
-        });
-      };
-    }
-  };
- getImage();
-}, [file]);
 
 useEffect(() => {
   const getImage = () => {
@@ -60,15 +44,15 @@ useEffect(() => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         if (ctx != null) {
-          canvas.width = 300;
-          canvas.height = 300;
-          ctx.drawImage(img, 0, 0, 300, 300);
+          canvas.width = 295;
+          canvas.height = 412;
+          ctx.drawImage(img, 0, 0, 295, 412);
           canvas.toBlob((blob) => {
             if (blob) {
               setImage({
                 url: URL.createObjectURL(blob),
-                width: 300,
-                height: 300
+                width: 295,
+                height: 412
               });
             }
           }, 'image/jpeg', 1);          
@@ -76,9 +60,9 @@ useEffect(() => {
       };
     }
   };
+
   getImage();
 }, [file]);
-
 
 const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
   if (event.target.files && event.target.files.length > 0) {
@@ -88,16 +72,14 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
     reader.onload = async () => {
       if(imagemSelecionada != undefined){
         setImagemSelecionada(imagemSelecionada.substring(imagemSelecionada.indexOf(',') + 1));
-    }
+      }
     };
     reader.onerror = () => {
       console.error("Erro ao converter imagem em base64");
     };
+    setFile(imagem);
   }
 };
-
-
-
 
 
   return(
@@ -121,13 +103,7 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
                 </IconButton>
               </label>
               <input
-                onChange={(e) => {
-                  const files = e.target.files;
-                  if (files && files[0]) {
-                    setFile(files[0]);
-                  }
-                }
-                }
+                onChange={handleImagemSelecionada}
                 id="file"
                 style={{ display: 'none' }}
                 type="file"

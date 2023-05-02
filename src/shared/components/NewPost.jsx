@@ -24,7 +24,7 @@ export const NewPost = ({ image }) => {
   const enter = () => {
     const ctx = canvasRef.current.getContext('2d');
     ctx.lineWidth = 5;
-    ctx.strokeStyle = 'yellow';
+    ctx.strokeStyle = 'blue';
     faces.map((face) => ctx.strokeRect(...face));
   };
 
@@ -59,22 +59,12 @@ export const NewPost = ({ image }) => {
         />
 
         <canvas
-          onMouseEnter={enter}
+          onMouseEnter ={enter}
           ref={canvasRef}
           width={width}             
           height={height}
         >
         </canvas>
-        {faces.map((face, i) => (
-          <input
-            name={`input${i}`}
-            style={{ left: face[0], top: face[1] + face[3] + 5 }}
-            placeholder="Tag a friend"
-            key={i}
-            className="friendInput"
-            onChange={addFriend}
-          />
-        ))}
       </div>
     </div>
   );
