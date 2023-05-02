@@ -21,8 +21,9 @@
     "react-dom": "^18.2.0",
     "react-imask": "^6.6.1",
     "react-number-format": "^5.1.4",
-    "react-router-dom": "6",
+    "react-router-dom": "^6.11.0",
     "react-scripts": "5.0.1",
+    "sharp": "^0.32.1",
     "yarn": "^1.22.19"
   },
   "devDependencies": {

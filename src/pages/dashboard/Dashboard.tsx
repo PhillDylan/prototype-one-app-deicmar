@@ -8,13 +8,10 @@ import { Box } from "@mui/system";
 import SendIcon from '@mui/icons-material/Send';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
-
-import MenuIcon from "@mui/icons-material/Menu";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-
-// Importar bibliotecas para detecção de rosto
-import * as faceapi from 'face-api.js';
-import { TinyFaceDetectorOptions } from 'face-api.js';
+import { NewPost } from "../../shared/components";
+import './App.css';
+import sharp from 'sharp';
+import * as convas from "canvas";
 
 
 export const Dashboard = () => {
@@ -28,35 +25,59 @@ const [nome, setNome] = useState("");
 const [sobrenome, setSobrenome] = useState("");
 const [cpf, setCpf] = useState("");
 const [statusEnvio, setStatusEnvio] = useState("certo");
-const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 
+
+const [file, setFile] = useState<Blob | undefined>();
+const [image, setImage] = useState<{url: string, width: number, height: number} | undefined>();
+
+const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
 
 
-// Adicionar função para detecção de rosto
-const detectarRosto = async () => {
-  try {
-    const img = await faceapi.fetchImage(imagemSelecionada!);
-    
-    const results = await faceapi.detectAllFaces(img, new TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-    if (results.length > 0) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d')!;
-      canvas.width = results[0].detection.box.width;
-      canvas.height = results[0].detection.box.height;
-      ctx.drawImage(img, results[0].detection.box.left, results[0].detection.box.top, results[0].detection.box.width, results[0].detection.box.height, 0, 0, results[0].detection.box.width, results[0].detection.box.height);
-      const croppedImageBase64 = canvas.toDataURL();
-      setImagemBase64(croppedImageBase64);
-      setImagemSelecionada(croppedImageBase64);
-      console.log(croppedImageBase64);
-    } else {
-      console.log("Não foi possível detectar rosto na imagem.");
+useEffect(() => {
+  const getImage = () => {
+    const img = new Image();
+    if (file) {
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        setImage({
+          url: img.src,
+          width: img.width,
+          height: img.height
+        });
+      };
     }
-  } catch (e) {
-    console.error(e);
-  }
-};
+  };
+ getImage();
+}, [file]);
 
+useEffect(() => {
+  const getImage = () => {
+    if (file != null) {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (ctx != null) {
+          canvas.width = 300;
+          canvas.height = 300;
+          ctx.drawImage(img, 0, 0, 300, 300);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              setImage({
+                url: URL.createObjectURL(blob),
+                width: 300,
+                height: 300
+              });
+            }
+          }, 'image/jpeg', 1);          
+        }
+      };
+    }
+  };
+  getImage();
+}, [file]);
 
 
 const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,10 +89,6 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
       if(imagemSelecionada != undefined){
         setImagemSelecionada(imagemSelecionada.substring(imagemSelecionada.indexOf(',') + 1));
     }
-      // Detectar rosto na imagem selecionada
-      await detectarRosto();
-      setImagemSelecionada(URL.createObjectURL(imagem));
-      setImagemBase64(reader.result as string);
     };
     reader.onerror = () => {
       console.error("Erro ao converter imagem em base64");
@@ -80,10 +97,46 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
 };
 
 
+
+
+
   return(
       <>
       <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
+        <Box>
+        {image ? (
+          <>
+            <NewPost image={image} />
+          </>
+        ):(
+          <div className="newPostCard">
+          <div className="addPost">
+              <label htmlFor="file">
+                  <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="span"
+                >
+                  <PhotoCamera />
+                </IconButton>
+              </label>
+              <input
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (files && files[0]) {
+                    setFile(files[0]);
+                  }
+                }
+                }
+                id="file"
+                style={{ display: 'none' }}
+                type="file"
+              />
+            </div>
+          </div>
+        )}
         
+        </Box>
         <Box>
           <input
             hidden
@@ -183,7 +236,7 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
         disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true}
         onClick={async () => {
             setStatusEnvio("enviando");
-            fetch('http://192.168.13.217:1880/api/endpoint', {
+            fetch('http://192.168.13.217:1881/api/endpoint', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -273,48 +326,3 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
       </>       
   );
 };
-/*
-fetch('http://localhost:1880/api/endpoint', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    picture: buffer,
-                    name: name,
-                    cpf: cpf,
-                    transportadora: 'Parceiras'
-                })
-            })
-            .then(response => response.json())
-            .then(data => 
-            console.log(data)
-            )
-            .catch(error => console.error(error));
-    }
-    
-    */
-/*
-async () => {
-                setStatusEnvio("enviando");
-                try {
-                const resposta = await fetch("http://192.168.13.217:1880/api/endpoint", {
-                    method: "POST",
-                    headers: {
-                    "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                    nome,
-                    sobrenome,
-                    cpf,
-                    imagem: imagemSelecionada,
-                    }),
-                });
-                const dados = await resposta.json();
-                console.log(dados);
-                setStatusEnvio("pronto");
-                } catch (erro) {
-                console.error(erro);
-                setStatusEnvio("erro");
-                }
-            }*/
