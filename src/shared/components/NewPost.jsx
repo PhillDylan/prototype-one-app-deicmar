@@ -32,8 +32,8 @@ export const NewPost = ({ image }) => {
     const loadModels = () => {
       Promise.all([
         faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/models')
+      //  faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+      //  faceapi.nets.faceExpressionNet.loadFromUri('/models')
       ])
         .then(handleImage)
         .catch((e) => console.log(e));

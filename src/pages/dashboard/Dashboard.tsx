@@ -212,7 +212,7 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
         disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true}
         onClick={async () => {
             setStatusEnvio("enviando");
-            fetch('http://192.168.13.217:1881/api/endpoint', {
+            fetch('http://192.168.13.224:1880/api/endpoint', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
