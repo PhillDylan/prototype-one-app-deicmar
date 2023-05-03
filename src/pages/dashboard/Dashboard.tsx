@@ -10,11 +10,8 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import { NewPost } from "../../shared/components";
 import './App.css';
-import sharp from 'sharp';
-import * as convas from "canvas";
-
-
 export const Dashboard = () => {
+
 const [open, setOpen] = React.useState(false);
 const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
 const [erroEnvio, setErroEnvio] = useState<string | undefined>();
@@ -33,7 +30,7 @@ const [image, setImage] = useState<{url: string, width: number, height: number} 
 const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
 
-
+const temErro = nome.length < 3 || sobrenome.length < 3 || cpf.length !== 11;
 
 useEffect(() => {
   const getImage = () => {
@@ -70,9 +67,13 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
     const reader = new FileReader();
     reader.readAsDataURL(imagem);
     reader.onload = async () => {
-      if(imagemSelecionada != undefined){
-        setImagemSelecionada(imagemSelecionada.substring(imagemSelecionada.indexOf(',') + 1));
+      let imagemBase64 = reader.result as string;
+      const index = imagemBase64.indexOf(',');
+      if (index !== -1) {
+        imagemBase64 = imagemBase64.slice(index + 1);
       }
+      setImagemBase64(imagemBase64);
+      setImagemSelecionada(imagemBase64);
     };
     reader.onerror = () => {
       console.error("Erro ao converter imagem em base64");
@@ -81,26 +82,46 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
   }
 };
 
+const handleApagarImagem = () => {
+  setFile(undefined);
+  setImage(undefined);
+  setImagemBase64(undefined);
+  setImagemSelecionada(undefined);
+};
 
-  return(
-      <>
-      <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
-        <Box>
+const handleSalvarImagem = () => {
+  // use o valor de imagemSelecionada ou imagemBase64 para salvar a imagem em base64
+  console.log(imagemSelecionada || imagemBase64);
+};
+
+
+return(
+  <>
+    <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
+      <Box>
         {image ? (
           <>
             <NewPost image={image} />
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+              <Button variant="contained" color="primary" onClick={handleApagarImagem}>Apagar Imagem</Button>
+              <Button style={{ marginLeft: '16px' }} variant="contained" color="primary" onClick={handleSalvarImagem}>Salvar Imagem</Button>
+            </div>
           </>
-        ):(
+        ) : (
           <div className="newPostCard">
-          <div className="addPost">
+            <div className="addPost">
               <label htmlFor="file">
-                  <IconButton
+                <IconButton
+                
                   color="primary"
                   aria-label="upload picture"
                   component="span"
                 >
                   <PhotoCamera />
                 </IconButton>
+                <Typography>
+                  Nenhuma imagem selecionada.
+                </Typography>
               </label>
               <input
                 onChange={handleImagemSelecionada}
@@ -111,49 +132,7 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
             </div>
           </div>
         )}
-        
-        </Box>
-        <Box>
-          <input
-            hidden
-            accept="image/*"
-            type="file"
-            id="imagem-input"
-            onChange={
-              handleImagemSelecionada
-            }
-          />
-          <label htmlFor="imagem-input">
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="span"
-            >
-              <PhotoCamera />
-            </IconButton>
-          </label>
-          {imagemSelecionada ? (
-            <img
-            sizes=""
-              src={imagemSelecionada}
-              style={{
-                maxWidth: "300px",
-                maxHeight: "300px",
-                marginTop: "10px",
-              }}
-            />
-          ) : (
-            <Typography>
-              Nenhuma imagem selecionada.
-            </Typography>
-          )}  
-        </Box>
-        
-        
-        
-        
-        
-        
+      </Box>     
           <Box
           component="form"
           sx={{
@@ -164,6 +143,7 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
         >
         <div>
           <TextField
+            error={nome.length < 3}
             required
             id="outlined-required"
             label="Required"
@@ -175,6 +155,7 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
             helperText="Digite o Nome"
           />
           <TextField
+            error={sobrenome.length < 3}
             required
             id="outlined-required"
             label="Required"
@@ -186,18 +167,19 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
             helperText="Digite o Sobrenome"
           />
           <TextField
+            error={cpf.length !== 11}
             id="filled-number"
             label="Required"
             type="number"
             InputLabelProps={{
-                shrink: true,
+              shrink: true,
             }}
             value={cpf}
             onChange={(event) => {
-              setCpf(event.target.value)
+              setCpf(event.target.value);
               setStatusEnvio("certo"); 
             }}
-            helperText="Digite o CPF"
+            helperText={cpf.length !== 11 ? "Digite um CPF válido" : "Digite o CPF"}
           />
 
         </div>
@@ -209,8 +191,9 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
       <Button
         variant="contained"
         endIcon={<SendIcon />}
-        disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true}
+        disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true || temErro}
         onClick={async () => {
+            console.log(imagemBase64);
             setStatusEnvio("enviando");
             fetch('http://192.168.13.224:1880/api/endpoint', {
                 method: 'POST',
@@ -222,7 +205,7 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
                     sobrenome,
                     cpf,
                     imagem: imagemBase64,
-                    transportadora: 'Parceiras'
+                    transportadora: 6
                 })
             })
             .then(response => response.json())
