@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
+import faceNotDetected from '../assets/img/face_not_detected.jpg';
+import ReactLoading from 'react-loading';
+
 
 interface ImageProps {
   url: string;
@@ -14,6 +17,7 @@ interface FriendsProps {
   };
 }
 
+
 export const NewPost = ({ image }: { image: ImageProps }) => {
   const { url, width, height } = image;
   const [faces, setFaces] = useState<number[][]>([]);
@@ -22,6 +26,8 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const croppedCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  const [showMessage, setShowMessage] = useState(false);
 
   const handleImage = async () => {
     if (imgRef.current) {
@@ -73,50 +79,81 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
             const ratio = Math.min(MAX_WIDTH / w, MAX_HEIGHT / h);
             const newWidth = Math.floor(w * ratio);
             const newHeight = Math.floor(h * ratio);
+            
+            // calcula as proporções para cada dimensão
+            const xRatio = (x - 45) / img.width;
+            const yRatio = (y - 50) / img.height;
+            const wRatio = (w + 90) / img.width;
+            const hRatio = (h + 90) / img.height;
+            
             canvas.width = newWidth;
             canvas.height = newHeight;
-            ctx.drawImage(img, x - 20, y - 120, w + 60, h + 160, 0, 0, newWidth, newHeight);
+            ctx.drawImage(img, xRatio * img.width, yRatio * img.height, wRatio * img.width, hRatio * img.height, 0, 0, newWidth, newHeight);
     
-            // converte a nova imagem em um objeto Image com várias resoluções
-            const blobUrl = canvas.toDataURL();
-            const srcset = `${blobUrl ?? ''} 1x, ${blobUrl?.replace(
-              'data:image/png',
-              'data:image/png 2x'
-            ) ?? ''} 2x`;
+            // cria um novo arquivo a partir do blob gerado pelo canvas
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const newFile = new File([blob], 'image.jpg', { type: blob.type });
+                const newBlobUrl = URL.createObjectURL(newFile);
     
-            setFriends((prev) => ({
-              ...prev,
-              face: { blobUrl: blobUrl ?? '', srcset },
-            }));
+                // atualiza o estado com a URL do novo arquivo criado
+                setFriends((prev) => ({
+                  ...prev,
+                  face: { blobUrl: newBlobUrl, srcset: '' },
+                }));
+              }
+            }, 'image/jpeg', 0.8); // qualidade 80%
           }
         }
       }
     };
+    
     
 
     enter();
     drawCropped();
   }, [faces]);
 
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!friends.face) {
+        setShowMessage(true);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [friends.face]);
+
+
   return (
     <div className="container">
-      <div className={friends.face ? 'left hidden' : 'left'} style={{ width, height, display: friends.face ? 'none' : 'block' }}>
-        <img ref={imgRef} crossOrigin="anonymous" src={url} alt="" />
-
-            <canvas ref={canvasRef} width={width} height={height}></canvas>
-
-            <canvas ref={croppedCanvasRef} style={{ display: 'none' }}></canvas>
-          </div>
-
+      {!showMessage ? (
+         <div className='left' style={{ width, height , display: friends.face ? 'none' : 'none' }}>
+         <img ref={imgRef} crossOrigin="anonymous" src={url} alt="" />
+ 
+             <canvas ref={canvasRef} width={width} height={height}></canvas>
+ 
+             <canvas ref={croppedCanvasRef} style={{ display: 'none' }}></canvas>
+           </div>
+      ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <img src={faceNotDetected} alt="" style={{ width: '295px', height: '412px' }} />
+            <p>Sem rosto detectado</p>
+          </div> 
+      )}
       {friends.face ? (
         <img
           src={friends.face.blobUrl}
           alt=""
           srcSet={friends.face.srcset}
-          style={{ width, height }}
+          style={{ width: '295px', height: '412px' }}
         />
       ) : (
-        <p>Sem rosto detectado</p>
+        <div style={{ display: showMessage ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center'   }}>
+          <ReactLoading  type = {'spin'} color={'#000000'} height={50} width={50} />
+          <p>Detectando Rosto...</p>
+        </div>
       )}
     </div>
   );

@@ -51,15 +51,15 @@ useEffect(() => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         if (ctx != null) {
-          canvas.width = 295;
-          canvas.height = 412;
-          ctx.drawImage(img, 0, 0, 295, 412);
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0, img.width, img.height);
           canvas.toBlob((blob) => {
             if (blob) {
               setImage({
                 url: URL.createObjectURL(blob),
-                width: 295,
-                height: 412
+                width: img.width,
+                height: img.height
               });
             }
           }, 'image/jpeg', 1);          
@@ -70,6 +70,7 @@ useEffect(() => {
 
   getImage();
 }, [file]);
+
 
 const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
   if (event.target.files && event.target.files.length > 0) {
