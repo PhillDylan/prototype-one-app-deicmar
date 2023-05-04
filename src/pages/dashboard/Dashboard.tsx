@@ -10,7 +10,17 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import { NewPost } from "../../shared/components";
 import './App.css';
+
+
+
+
+
+
 export const Dashboard = () => {
+
+
+
+  
 
 const [open, setOpen] = React.useState(false);
 const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
