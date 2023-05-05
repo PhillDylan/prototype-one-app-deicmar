@@ -67,28 +67,51 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
 
     const drawCropped = () => {
       if (faces.length > 0) {
+        console.log(faces.map((face) => face))
         const [x, y, w, h] = faces[0];
         const img = imgRef.current;
+        console.log('x antes',x)
+        console.log('y antes', y)
+        console.log('w antes',w)
+        console.log('h antes', h)
         const canvas = canvasRef.current;
         if (canvas) {
           const ctx = canvas.getContext('2d');
           if (ctx && img) {
             // redimensiona a imagem original para a resolução máxima necessária
-            const MAX_WIDTH = 1200;
-            const MAX_HEIGHT = 800;
+            const MAX_WIDTH = 5000;
+            const MAX_HEIGHT = 10000;
             const ratio = Math.min(MAX_WIDTH / w, MAX_HEIGHT / h);
             const newWidth = Math.floor(w * ratio);
             const newHeight = Math.floor(h * ratio);
-            
+            const factor = 179 / w
             // calcula as proporções para cada dimensão
-            const xRatio = (x - 45) / img.width;
-            const yRatio = (y - 50) / img.height;
-            const wRatio = (w + 90) / img.width;
-            const hRatio = (h + 90) / img.height;
+            const xRatio = (x * factor) ;
+            const yRatio = (y * factor) ;
+            const wRatio = (w * factor) ;
+            const hRatio = (h * factor) ;
+            const Larg = (img.width * factor)
+            const altu = (img.height * factor)
+            const deltaX =  (70/ factor) 
+            const deltaY =  (70/ factor) 
+            console.log('x',xRatio)
+            console.log('y', yRatio)
+            console.log('w',wRatio)
+            console.log('h', hRatio)
+            console.log('l',Larg)
+            console.log('a', altu)
+            console.log('factor', factor)
+            canvas.width = Larg;
+            canvas.height = altu;
+            console.log('corte x :' + ( x - deltaX) )
+            console.log('corte y :' + (y - deltaY))
+            console.log('corte w :' + (w + 2 * deltaX))
+            console.log('corte h :' + (h + 2 * deltaY))
+
+            ctx.drawImage(img, x - deltaX , y - deltaY, w + 3 * deltaX , h + 3 * deltaY , 0, 0, Larg, altu)
+
             
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-            ctx.drawImage(img, xRatio * img.width, yRatio * img.height, wRatio * img.width, hRatio * img.height, 0, 0, newWidth, newHeight);
+            console.log(img.width, img.height);
     
             // cria um novo arquivo a partir do blob gerado pelo canvas
             canvas.toBlob((blob) => {
@@ -102,7 +125,7 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
                   face: { blobUrl: newBlobUrl, srcset: '' },
                 }));
               }
-            }, 'image/jpeg', 0.8); // qualidade 80%
+            }, 'image/jpeg', 1.0); // qualidade 80%
           }
         }
       }
@@ -120,7 +143,7 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
       if (!friends.face) {
         setShowMessage(true);
       }
-    }, 5000);
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, [friends.face]);
@@ -143,15 +166,26 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
           </div> 
       )}
       {friends.face ? (
+        <>
+                        <img
+                        src={friends.face.blobUrl}
+                        alt=""
+                        srcSet={friends.face.srcset}
+                        style={{ width, height }}
+                      />
+
         <img
           src={friends.face.blobUrl}
           alt=""
           srcSet={friends.face.srcset}
           style={{ width: '295px', height: '412px' }}
         />
+
+        </>
       ) : (
         <div style={{ display: showMessage ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center'   }}>
           <ReactLoading  type = {'spin'} color={'#000000'} height={50} width={50} />
+
           <p>Detectando Rosto...</p>
         </div>
       )}

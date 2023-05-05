@@ -48,18 +48,24 @@ useEffect(() => {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
+        console.log('Original Image Dimensions:', img.width, img.height);
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         if (ctx != null) {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0, img.width, img.height);
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          ctx.drawImage(img, 0, 0);
           canvas.toBlob((blob) => {
             if (blob) {
+              const image = new Image();
+              image.src = URL.createObjectURL(blob);
+              image.onload = () => {
+                console.log('Resized Image Dimensions:', image.width, image.height);
+              };
               setImage({
-                url: URL.createObjectURL(blob),
-                width: img.width,
-                height: img.height
+                url: image.src,
+                width: image.width,
+                height: image.height,
               });
             }
           }, 'image/jpeg', 1);          
@@ -70,6 +76,9 @@ useEffect(() => {
 
   getImage();
 }, [file]);
+
+
+
 
 
 const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,6 +112,12 @@ const handleApagarImagem = () => {
 const handleSalvarImagem = () => {
   // use o valor de imagemSelecionada ou imagemBase64 para salvar a imagem em base64
   console.log(imagemSelecionada || imagemBase64);
+};
+
+const handleUpdateImage = (image :any ) => {
+  // use o valor de imagemSelecionada ou imagemBase64 para salvar a imagem em base64
+  console.log(imagemSelecionada || imagemBase64);
+  setImage(image);
 };
 
 
