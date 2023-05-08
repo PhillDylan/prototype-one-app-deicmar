@@ -35,7 +35,48 @@ const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
 const [upImage, setResultImage] = useState<{url: string, width: number, height: number} | undefined>();
 
-const temErro = nome.length < 3 || sobrenome.length < 3 || cpf.length !== 11;
+
+
+
+const ValidadorCPF = (cpf: any) => {
+  // inicia as variaveis que serão ultilizadas no codigo
+var Soma : any ,i : any ,Resto : any , CPF = cpf;
+
+// pega o cpf informado e retira os '.' e o  '-' para fazer a verificação
+CPF = String(CPF.replace("-", "").replace(".", "").replace(/[^0-9]/g, ''));
+Soma = 0;
+
+// verifica se os caracteres são todos iguais
+if (CPF.length !== 11 || !Array.from(CPF).filter(e => e !== CPF[0]).length) {
+    CPF = false;
+    return CPF;
+}
+
+//faz o calculo de verificação de todos os digitos para verificar se o CPF é valido
+for (i = 1; i <= 9; i++) Soma = Soma + parseInt(CPF.substring(i - 1, i)) * (11 - i);
+Resto = (Soma * 10) % 11;
+
+if ((Resto === 10) || (Resto === 11)) Resto = 0;
+if (Resto != parseInt(CPF.substring(9, 10))){ 
+    CPF = false;
+    return CPF;
+}
+Soma = 0;
+for (i = 1; i <= 10; i++) Soma = Soma + parseInt(CPF.substring(i - 1, i)) * (12 - i);
+Resto = (Soma * 10) % 11;
+
+if ((Resto === 10) || (Resto === 11)) Resto = 0;
+if (Resto !== parseInt(CPF.substring(10, 11))){
+    CPF = false;
+    return CPF;
+}
+
+CPF = true;
+return CPF;
+}
+
+
+const temErro = nome.length < 3 || sobrenome.length < 3 || !ValidadorCPF(cpf);
 
 
 
@@ -126,12 +167,6 @@ const handleApagarImagem = () => {
   setImagemSelecionada(undefined);
 };
 
-const handleSalvarImagem = () => {
-  // use o valor de imagemSelecionada ou imagemBase64 para salvar a imagem em base64
-  console.log(imagemSelecionada || imagemBase64);
-};
-
-
 return(
   <>
     <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
@@ -139,15 +174,8 @@ return(
         {image ? (
           <>
             <NewPost image={image}  handleResult={updateImage}/>
-              {upImage ? (
-                <p>Resultado: {upImage.url} </p>
-              ) : (
-                <p>Resultado:</p>
-                )}
-
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
               <Button variant="contained" color="primary" onClick={handleApagarImagem}>Apagar Imagem</Button>
-              <Button style={{ marginLeft: '16px' }} variant="contained" color="primary" onClick={handleSalvarImagem}>Salvar Imagem</Button>
             </div>
           </>
         ) : (
@@ -210,7 +238,7 @@ return(
             helperText="Digite o Sobrenome"
           />
           <TextField
-            error={cpf.length !== 11}
+            error={!ValidadorCPF(cpf)}
             id="filled-number"
             label="Required"
             type="number"
@@ -222,7 +250,7 @@ return(
               setCpf(event.target.value);
               setStatusEnvio("certo"); 
             }}
-            helperText={cpf.length !== 11 ? "Digite um CPF válido" : "Digite o CPF"}
+            helperText={!ValidadorCPF(cpf) ? "Digite um CPF válido" : "Digite o CPF"}
           />
 
         </div>
