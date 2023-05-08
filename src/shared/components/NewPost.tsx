@@ -68,7 +68,11 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
     const drawCropped = () => {
       if (faces.length > 0) {
         console.log(faces.map((face) => face))
-        const [x, y, w, h] = faces[0];
+        var [x, y, w, h] = faces[0];
+        x = x;
+        y = y - (0.4 * w);
+        w = w;
+        h = 1.4 * w;
         const img = imgRef.current;
         console.log('x antes',x)
         console.log('y antes', y)
@@ -85,6 +89,7 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
             const newWidth = Math.floor(w * ratio);
             const newHeight = Math.floor(h * ratio);
             const factor = 179 / w
+
             // calcula as proporções para cada dimensão
             const xRatio = (x * factor) ;
             const yRatio = (y * factor) ;
@@ -92,8 +97,8 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
             const hRatio = (h * factor) ;
             const Larg = (img.width * factor)
             const altu = (img.height * factor)
-            const deltaX =  (70/ factor) 
-            const deltaY =  (70/ factor) 
+            const deltaX =  (20/ factor) 
+            const deltaY =  (120/ factor) 
             console.log('x',xRatio)
             console.log('y', yRatio)
             console.log('w',wRatio)
@@ -101,37 +106,45 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
             console.log('l',Larg)
             console.log('a', altu)
             console.log('factor', factor)
-            canvas.width = Larg;
-            canvas.height = altu;
+            canvas.width = 295;
+            canvas.height = 412;
             console.log('corte x :' + ( x - deltaX) )
             console.log('corte y :' + (y - deltaY))
-            console.log('corte w :' + (w + 2 * deltaX))
+            console.log('corte w :' + (w + 2 * (0.71 * deltaX)))
             console.log('corte h :' + (h + 2 * deltaY))
 
-            ctx.drawImage(img, x - deltaX , y - deltaY, w + 3 * deltaX , h + 3 * deltaY , 0, 0, Larg, altu)
+            ctx.drawImage(img, x , y  , w  , h  , 0, 0, 295, 412)
+              // cria um novo canvas e contexto para a imagem redimensionada
+              const newCanvas = document.createElement('canvas');
+              const newCtx = newCanvas.getContext('2d');
 
-            
-            console.log(img.width, img.height);
-    
-            // cria um novo arquivo a partir do blob gerado pelo canvas
-            canvas.toBlob((blob) => {
-              if (blob) {
-                const newFile = new File([blob], 'image.jpg', { type: blob.type });
-                const newBlobUrl = URL.createObjectURL(newFile);
-    
-                // atualiza o estado com a URL do novo arquivo criado
-                setFriends((prev) => ({
-                  ...prev,
-                  face: { blobUrl: newBlobUrl, srcset: '' },
-                }));
+              // redimensiona a imagem desenhada no canvas original
+              const newWidth2 = 295// novo valor de largura;
+              const newHeight2 = 412// novo valor de altura;
+              newCanvas.width = newWidth2;
+              newCanvas.height = newHeight2;
+              if(newCtx){
+              newCtx.drawImage(canvas, 0, 0, newWidth2, newHeight2);
+
+              console.log(canvas.width + 'x' + canvas.height);
+              // cria um novo arquivo a partir do blob gerado pelo novo canvas
+                newCanvas.toBlob((blob) => {
+                  if (blob) {
+                    const newFile = new File([blob], 'image.jpg', { type: blob.type });
+                    const newBlobUrl = URL.createObjectURL(newFile);
+
+                    // atualiza o estado com a URL do novo arquivo criado
+                    setFriends((prev) => ({
+                      ...prev,
+                      face: { blobUrl: newBlobUrl, srcset: '' },
+                    }));
+                  }
+                }, 'image/jpeg', 1.0); // qualidade 100%
               }
-            }, 'image/jpeg', 1.0); // qualidade 80%
           }
         }
       }
     };
-    
-    
 
     enter();
     drawCropped();
@@ -178,7 +191,7 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
           src={friends.face.blobUrl}
           alt=""
           srcSet={friends.face.srcset}
-          style={{ width: '295px', height: '412px' }}
+
         />
 
         </>
