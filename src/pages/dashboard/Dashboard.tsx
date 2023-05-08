@@ -18,16 +18,10 @@ import './App.css';
 
 export const Dashboard = () => {
 
-
-
-  
-
 const [open, setOpen] = React.useState(false);
 const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
 const [erroEnvio, setErroEnvio] = useState<string | undefined>();
 const [mensagemEnvio, setMensagemEnvio] = useState("");
-
-
 const [nome, setNome] = useState("");
 const [sobrenome, setSobrenome] = useState("");
 const [cpf, setCpf] = useState("");
@@ -39,8 +33,31 @@ const [image, setImage] = useState<{url: string, width: number, height: number} 
 
 const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
+const [upImage, setResultImage] = useState<{url: string, width: number, height: number} | undefined>();
 
 const temErro = nome.length < 3 || sobrenome.length < 3 || cpf.length !== 11;
+
+
+
+const updateImage = async (e: {url?: string, width: number, height: number}) => {
+  if (!e.url) return;
+
+  const response = await fetch(e.url);
+  const blob = await response.blob();
+
+  const reader = new FileReader();
+  reader.readAsDataURL(blob);
+
+  reader.onload = () => {
+    const base64String = reader.result?.toString();
+    console.log(base64String);
+    setImagemBase64(base64String);
+    // Faça o que quiser com a string Base64 aqui
+  };
+};
+
+
+
 
 useEffect(() => {
   const getImage = () => {
@@ -114,12 +131,6 @@ const handleSalvarImagem = () => {
   console.log(imagemSelecionada || imagemBase64);
 };
 
-const handleUpdateImage = (image :any ) => {
-  // use o valor de imagemSelecionada ou imagemBase64 para salvar a imagem em base64
-  console.log(imagemSelecionada || imagemBase64);
-  setImage(image);
-};
-
 
 return(
   <>
@@ -127,7 +138,13 @@ return(
       <Box>
         {image ? (
           <>
-            <NewPost image={image} />
+            <NewPost image={image}  handleResult={updateImage}/>
+              {upImage ? (
+                <p>Resultado: {upImage.url} </p>
+              ) : (
+                <p>Resultado:</p>
+                )}
+
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
               <Button variant="contained" color="primary" onClick={handleApagarImagem}>Apagar Imagem</Button>
               <Button style={{ marginLeft: '16px' }} variant="contained" color="primary" onClick={handleSalvarImagem}>Salvar Imagem</Button>
@@ -221,10 +238,13 @@ return(
         onClick={async () => {
             console.log(imagemBase64);
             setStatusEnvio("enviando");
+            const username = 'admin';
+            const password = 'speed12345'; // replace this with the decrypted password
+            const token = btoa(`${username}:${password}`);
             fetch('http://192.168.13.224:1880/api/endpoint', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                  'Authorization': 'Basic ' + token
                 },
                 body: JSON.stringify({
                     nome,

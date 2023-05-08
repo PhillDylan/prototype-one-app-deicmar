@@ -8,6 +8,7 @@ interface ImageProps {
   url: string;
   width: number;
   height: number;
+  newBlobUrl?: string;
 }
 
 interface FriendsProps {
@@ -17,8 +18,13 @@ interface FriendsProps {
   };
 }
 
+interface upImage {
+  url: string;
+  width: number;
+  height: number;
+}
 
-export const NewPost = ({ image }: { image: ImageProps }) => {
+export const NewPost = ({ image,handleResult  }: { image: ImageProps; handleResult: (upImage: upImage) => void }) => {
   const { url, width, height } = image;
   const [faces, setFaces] = useState<number[][]>([]);
   const [friends, setFriends] = useState<FriendsProps>({});
@@ -69,49 +75,16 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
       if (faces.length > 0) {
         console.log(faces.map((face) => face))
         var [x, y, w, h] = faces[0];
-        x = x;
         y = y - (0.4 * w);
-        w = w;
         h = 1.4 * w;
         const img = imgRef.current;
-        console.log('x antes',x)
-        console.log('y antes', y)
-        console.log('w antes',w)
-        console.log('h antes', h)
         const canvas = canvasRef.current;
         if (canvas) {
           const ctx = canvas.getContext('2d');
           if (ctx && img) {
-            // redimensiona a imagem original para a resolução máxima necessária
-            const MAX_WIDTH = 5000;
-            const MAX_HEIGHT = 10000;
-            const ratio = Math.min(MAX_WIDTH / w, MAX_HEIGHT / h);
-            const newWidth = Math.floor(w * ratio);
-            const newHeight = Math.floor(h * ratio);
-            const factor = 179 / w
 
-            // calcula as proporções para cada dimensão
-            const xRatio = (x * factor) ;
-            const yRatio = (y * factor) ;
-            const wRatio = (w * factor) ;
-            const hRatio = (h * factor) ;
-            const Larg = (img.width * factor)
-            const altu = (img.height * factor)
-            const deltaX =  (20/ factor) 
-            const deltaY =  (120/ factor) 
-            console.log('x',xRatio)
-            console.log('y', yRatio)
-            console.log('w',wRatio)
-            console.log('h', hRatio)
-            console.log('l',Larg)
-            console.log('a', altu)
-            console.log('factor', factor)
             canvas.width = 295;
             canvas.height = 412;
-            console.log('corte x :' + ( x - deltaX) )
-            console.log('corte y :' + (y - deltaY))
-            console.log('corte w :' + (w + 2 * (0.71 * deltaX)))
-            console.log('corte h :' + (h + 2 * deltaY))
 
             ctx.drawImage(img, x , y  , w  , h  , 0, 0, 295, 412)
               // cria um novo canvas e contexto para a imagem redimensionada
@@ -132,7 +105,7 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
                   if (blob) {
                     const newFile = new File([blob], 'image.jpg', { type: blob.type });
                     const newBlobUrl = URL.createObjectURL(newFile);
-
+                    handleResult({url: newBlobUrl,width: newCanvas.width,height: newCanvas.height})
                     // atualiza o estado com a URL do novo arquivo criado
                     setFriends((prev) => ({
                       ...prev,
@@ -180,20 +153,11 @@ export const NewPost = ({ image }: { image: ImageProps }) => {
       )}
       {friends.face ? (
         <>
-                        <img
-                        src={friends.face.blobUrl}
-                        alt=""
-                        srcSet={friends.face.srcset}
-                        style={{ width, height }}
-                      />
-
-        <img
-          src={friends.face.blobUrl}
-          alt=""
-          srcSet={friends.face.srcset}
-
-        />
-
+          <img
+            src={friends.face.blobUrl}
+            alt=""
+            srcSet={friends.face.srcset}
+          />
         </>
       ) : (
         <div style={{ display: showMessage ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center'   }}>
