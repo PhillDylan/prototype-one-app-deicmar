@@ -10,6 +10,8 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import { NewPost } from "../../shared/components";
 import './App.css';
+import MagnifyingGlassIcon from '@heroicons/react/24/solid/MagnifyingGlassIcon';
+import { Card, InputAdornment, OutlinedInput, SvgIcon } from '@mui/material';
 
 
 
@@ -90,13 +92,33 @@ const updateImage = async (e: {url?: string, width: number, height: number}) => 
   reader.readAsDataURL(blob);
 
   reader.onload = () => {
-    const base64String = reader.result?.toString();
-    console.log(base64String);
+    let base64String = reader.result?.toString();
+    const index = base64String?.indexOf(',');
+    if(index){
+      if (index !== -1) {
+        base64String = base64String?.slice(index + 1);
+      }
+    }
     setImagemBase64(base64String);
     // Faça o que quiser com a string Base64 aqui
   };
 };
 
+useEffect(() => {
+  const username = 'admin';
+  const password = 'speed12345'; // replace this with the decrypted password
+  const token = btoa(`${username}:${password}`);
+  fetch('http://192.168.13.224:1880/api/groupsid', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Basic ' + token
+    },
+}).then(response => response.json()).then(data => {
+      console.log(data);
+      }).catch(error => {
+      console.error(error);
+      });              
+}, []);
 
 
 
@@ -106,7 +128,6 @@ useEffect(() => {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
-        console.log('Original Image Dimensions:', img.width, img.height);
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         if (ctx != null) {
@@ -118,7 +139,6 @@ useEffect(() => {
               const image = new Image();
               image.src = URL.createObjectURL(blob);
               image.onload = () => {
-                console.log('Resized Image Dimensions:', image.width, image.height);
               };
               setImage({
                 url: image.src,
@@ -170,6 +190,7 @@ const handleApagarImagem = () => {
 return(
   <>
     <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
+      
       <Box>
         {image ? (
           <>
@@ -264,12 +285,12 @@ return(
         endIcon={<SendIcon />}
         disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true || temErro}
         onClick={async () => {
-            console.log(imagemBase64);
             setStatusEnvio("enviando");
             const username = 'admin';
             const password = 'speed12345'; // replace this with the decrypted password
             const token = btoa(`${username}:${password}`);
-            fetch('http://192.168.13.224:1880/api/endpoint', {
+
+            fetch('http://192.168.13.224:1880/api/cadastro', {
                 method: 'POST',
                 headers: {
                   'Authorization': 'Basic ' + token
