@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
 import faceNotDetected from '../assets/img/face_not_detected.jpg';
 import ReactLoading from 'react-loading';
+import { Typography } from '@mui/material';
 
 
 interface ImageProps {
@@ -148,7 +149,9 @@ export const NewPost = ({ image,handleResult  }: { image: ImageProps; handleResu
       ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <img src={faceNotDetected} alt="" style={{ width: '295px', height: '412px' }} />
-            <p>Sem rosto detectado</p>
+            <Typography>
+              <p>Sem rosto detectado</p>
+            </Typography>
           </div> 
       )}
       {friends.face ? (
@@ -162,8 +165,9 @@ export const NewPost = ({ image,handleResult  }: { image: ImageProps; handleResu
       ) : (
         <div style={{ display: showMessage ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center'   }}>
           <ReactLoading  type = {'spin'} color={'#000000'} height={50} width={50} />
-
-          <p>Detectando Rosto...</p>
+          <Typography>
+            <p>Detectando Rosto...</p>
+          </Typography>
         </div>
       )}
     </div>

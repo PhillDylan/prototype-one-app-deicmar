@@ -1,6 +1,6 @@
 import { LayoutBaseDePagina } from "../../shared/layouts"
 import { PhotoCamera } from "@mui/icons-material";
-import { Alert, AlertColor, AlertTitle, Button, IconButton, Typography } from "@mui/material";
+import { Alert, AlertColor, AlertTitle, Button, Divider, Grid, IconButton, Typography } from "@mui/material";
 import { Routes, Route, Navigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import TextField from '@mui/material/TextField';
@@ -12,6 +12,8 @@ import { NewPost } from "../../shared/components";
 import './App.css';
 import MagnifyingGlassIcon from '@heroicons/react/24/solid/MagnifyingGlassIcon';
 import { Card, InputAdornment, OutlinedInput, SvgIcon } from '@mui/material';
+import Stack from '@mui/material/Stack';
+
 
 
 
@@ -191,20 +193,28 @@ return(
   <>
     <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
       
-      <Box>
-        {image ? (
-          <>
-            <NewPost image={image}  handleResult={updateImage}/>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
-              <Button variant="contained" color="primary" onClick={handleApagarImagem}>Apagar Imagem</Button>
-            </div>
-          </>
-        ) : (
+    <Box style={{width: '100%', height: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+  <Grid           container
+          columns={{ xs: 2, md: 2 }}
+          direction="column"
+          justifyContent="center"
+          alignItems="center">
+    {image ? (
+    
+      <Box style={{width: '100%', height: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+     
+          <NewPost image={image}  handleResult={updateImage}/>
+
+
+          <Button variant="contained" color="primary" onClick={handleApagarImagem}>Apagar Imagem</Button>
+          </Box>
+    ) : (
+      <Box >
+        <Grid>
           <div className="newPostCard">
             <div className="addPost">
               <label htmlFor="file">
                 <IconButton
-                
                   color="primary"
                   aria-label="upload picture"
                   component="span"
@@ -223,17 +233,28 @@ return(
               />
             </div>
           </div>
-        )}
-      </Box>     
+        </Grid>
+      </Box>
+    )}
+  </Grid>
+</Box>
+
+
+      <Divider />
+
           <Box
           component="form"
           sx={{
-            '& .MuiTextField-root': { m: 1, width: '18ch' },
+            '& .MuiTextField-root': { m: 1, width: '38ch' },
           }}
           noValidate
           autoComplete="off"
         >
-        <div>
+        <Grid container spacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}   direction="column"
+  justifyContent="center"
+  alignItems="center">
+
+        <Grid item xs={8} >
           <TextField
             error={nome.length < 3}
             required
@@ -246,6 +267,8 @@ return(
             }}
             helperText="Digite o Nome"
           />
+          </Grid>
+          <Grid item xs={4}>
           <TextField
             error={sobrenome.length < 3}
             required
@@ -258,6 +281,8 @@ return(
             }}
             helperText="Digite o Sobrenome"
           />
+          </Grid>
+          <Grid item xs={8}>
           <TextField
             error={!ValidadorCPF(cpf)}
             id="filled-number"
@@ -273,8 +298,9 @@ return(
             }}
             helperText={!ValidadorCPF(cpf) ? "Digite um CPF válido" : "Digite o CPF"}
           />
+           </Grid>
 
-        </div>
+        </Grid>
 
       </Box>
       
