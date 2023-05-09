@@ -55,64 +55,7 @@ export const Dashboard3 = () => {
         }}
         height={theme.spacing(5)} marginX={1} padding='85%' paddingX={2} display="flex" gap={1} alignItems="center" component={Paper} elevation={24}
       >
-        <Stack
-          alignItems="center"
-          direction="row"
-          justifyContent="space-between"
-          spacing={2}
-          sx={{
-            minHeight: TOP_NAV_HEIGHT,
-            px: 2
-          }}
-        >
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={2}
-          >
-            <Tooltip title="Search">
-              <IconButton>
-                <SvgIcon fontSize="small">
-                  <MagnifyingGlassIcon />
-                </SvgIcon>
-              </IconButton>
-            </Tooltip>
-          </Stack>
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={2}
-          >
-            <Tooltip title="Contacts">
-              <IconButton>
-                <SvgIcon fontSize="small">
-                  <UsersIcon />
-                </SvgIcon>
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Notifications">
-              <IconButton>
-                <Badge
-                  badgeContent={4}
-                  color="success"
-                  variant="dot"
-                >
-                  <SvgIcon fontSize="small">
-                    <BellIcon />
-                  </SvgIcon>
-                </Badge>
-              </IconButton>
-            </Tooltip>
-            <Avatar
-              sx={{
-                cursor: 'pointer',
-                height: 40,
-                width: 40
-              }}
-              src="/assets/avatars/avatar-anika-visser.png"
-            />
-          </Stack>
-        </Stack>
+       
       </Box>
         
         </LayoutBaseDePagina>

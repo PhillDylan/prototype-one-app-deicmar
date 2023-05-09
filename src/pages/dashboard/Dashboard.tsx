@@ -304,8 +304,18 @@ return(
 
       </Box>
       
-    
-    <Box gap={1}>   
+      <Divider />
+
+
+    <Box gap={1}> 
+    <Grid item xs={8} 
+          container
+          columns={{ xs: 2, md: 2 }}
+          direction="column"
+          justifyContent="center"
+          alignItems="center">
+    <Box>
+  
       <Button
         variant="contained"
         endIcon={<SendIcon />}
@@ -364,6 +374,7 @@ return(
       >
         {statusEnvio === "enviando" ? "ENVIANDO..." : statusEnvio === "pronto"? "ENVIADO" : statusEnvio === "erro"? "REENVIAR" : "SEND"}
       </Button>
+
     </Box>   
 
     <Box sx={{ width: '100%' }}>
@@ -400,6 +411,8 @@ return(
     >Re-open
     </Button>
   </Box> 
+  </Grid>
+  </Box>
         
         
       </LayoutBaseDePagina>
