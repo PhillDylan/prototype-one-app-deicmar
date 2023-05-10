@@ -2,7 +2,7 @@ import { LayoutBaseDePagina } from "../../shared/layouts"
 import { PhotoCamera } from "@mui/icons-material";
 import { Alert, AlertColor, AlertTitle, Button, Divider, Grid, IconButton, Typography } from "@mui/material";
 import { Routes, Route, Navigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TextField from '@mui/material/TextField';
 import { Box } from "@mui/system";
 import SendIcon from '@mui/icons-material/Send';
@@ -10,15 +10,6 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import { NewPost } from "../../shared/components";
 import './App.css';
-import MagnifyingGlassIcon from '@heroicons/react/24/solid/MagnifyingGlassIcon';
-import { Card, InputAdornment, OutlinedInput, SvgIcon } from '@mui/material';
-import Stack from '@mui/material/Stack';
-
-
-
-
-
-
 
 export const Dashboard = () => {
 
@@ -38,8 +29,6 @@ const [image, setImage] = useState<{url: string, width: number, height: number} 
 const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
 const [upImage, setResultImage] = useState<{url: string, width: number, height: number} | undefined>();
-
-
 
 
 const ValidadorCPF = (cpf: any) => {
@@ -189,16 +178,18 @@ const handleApagarImagem = () => {
   setImagemSelecionada(undefined);
 };
 
+
+
+const removeCaracteresCPF = (cpf: string) => {
+  return cpf.replace(/[.-]/g, '');
+};
+
 return(
   <>
     <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
       
     <Box style={{width: '100%', height: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-  <Grid           container
-          columns={{ xs: 2, md: 2 }}
-          direction="column"
-          justifyContent="center"
-          alignItems="center">
+
     {image ? (
     
       <Box style={{width: '100%', height: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
@@ -209,7 +200,6 @@ return(
           <Button variant="contained" color="primary" onClick={handleApagarImagem}>Apagar Imagem</Button>
           </Box>
     ) : (
-      <Box >
         <Grid>
           <div className="newPostCard">
             <div className="addPost">
@@ -234,77 +224,107 @@ return(
             </div>
           </div>
         </Grid>
-      </Box>
     )}
-  </Grid>
 </Box>
 
-
-      <Divider />
-
-          <Box
-          component="form"
-          sx={{
-            '& .MuiTextField-root': { m: 1, width: '38ch' },
-          }}
-          noValidate
-          autoComplete="off"
+  <Divider />
+        <Grid
+        container
+        spacing={2}
+        columns={{xs: 12, md: 3}}
+        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
         >
-        <Grid container spacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}   direction="column"
-  justifyContent="center"
-  alignItems="center">
+            <Grid
+              item
+              xs={8}
+              md={2}
+              >
+                <TextField
+                  placeholder={'NOME'}
+                  error={nome.length < 3}
+                  required
+                  InputLabelProps={{
+                    shrink: true,
+                    
+                  }}
+                  id="outlined-required"
+                  label={'Required'}
+                  margin={'normal'}
+                  value={nome}
+                  onChange={(event) => {
+                  setNome(event.target.value);
+                  setStatusEnvio("certo"); 
+                  }}
+                  helperText="Digite o Nome"
+                />
+              </Grid>
 
-        <Grid item xs={8} >
-          <TextField
-            error={nome.length < 3}
-            required
-            id="outlined-required"
-            label="Required"
-            value={nome}
-            onChange={(event) => {
-            setNome(event.target.value);
-            setStatusEnvio("certo"); 
-            }}
-            helperText="Digite o Nome"
-          />
-          </Grid>
-          <Grid item xs={4}>
-          <TextField
-            error={sobrenome.length < 3}
-            required
-            id="outlined-required"
-            label="Required"
-            value={sobrenome}
-            onChange={(event) => {
-              setSobrenome(event.target.value);
-              setStatusEnvio("certo"); 
-            }}
-            helperText="Digite o Sobrenome"
-          />
-          </Grid>
-          <Grid item xs={8}>
-          <TextField
-            error={!ValidadorCPF(cpf)}
-            id="filled-number"
-            label="Required"
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            value={cpf}
-            onChange={(event) => {
-              setCpf(event.target.value);
-              setStatusEnvio("certo"); 
-            }}
-            helperText={!ValidadorCPF(cpf) ? "Digite um CPF válido" : "Digite o CPF"}
-          />
-           </Grid>
+              <Grid
+              item xs={4}
+              >
+                <TextField
+                  placeholder={'SOBRENOME'}
+                  error={sobrenome.length < 3}
+                  required
+                  id="outlined-required"
+                  label={'Required'}
+                  value={sobrenome}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  margin={'normal'}
+                  onChange={(event) => {
+                    setSobrenome(event.target.value);
+                    setStatusEnvio("certo"); 
+                  }}
+                  helperText="Digite o Sobrenome"
+                />
+              </Grid>
+                            
+              <Grid
+              item
+              xs={8}
+              >
+                <TextField
+                      margin={'normal'}
+                      placeholder={'000.000.000-00'}
+                      error={!ValidadorCPF(cpf)}
+                      id="filled-number"
+                      label={'Required'}
+                      type="tel"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={cpf}
+                      onChange={(event) => {
+                        const inputCPF = event.target.value.replace(/[^\d]/g, ''); // Remove caracteres não numéricos
+                        let formattedCPF = '';
 
+                        if (inputCPF.length <= 3) {
+                          formattedCPF = inputCPF;
+                        } else if (inputCPF.length <= 6) {
+                          formattedCPF = inputCPF.substr(0, 3) + '.' + inputCPF.substr(3);
+                        } else if (inputCPF.length <= 9) {
+                          formattedCPF = inputCPF.substr(0, 3) + '.' + inputCPF.substr(3, 3) + '.' + inputCPF.substr(6);
+                        } else {
+                          formattedCPF = inputCPF.substr(0, 3) + '.' + inputCPF.substr(3, 3) + '.' + inputCPF.substr(6, 3) + '-' + inputCPF.substr(9);
+                        }
+
+                        setCpf(formattedCPF);
+                        setStatusEnvio("certo");
+                      }}
+                      inputProps={{
+                        maxLength: 14, // Define o limite máximo de caracteres
+                      }}
+                      helperText={!ValidadorCPF(cpf) ? "Digite um CPF válido" : "Digite o CPF"}
+                    />
+
+              </Grid>
         </Grid>
-
-      </Box>
-      
-      <Divider />
+  <Divider />
 
 
     <Box gap={1}> 
@@ -325,6 +345,7 @@ return(
             const username = 'admin';
             const password = 'speed12345'; // replace this with the decrypted password
             const token = btoa(`${username}:${password}`);
+            const cpfSemCaracteres = removeCaracteresCPF(cpf);
 
             fetch('http://192.168.13.224:1880/api/cadastro', {
                 method: 'POST',
@@ -334,7 +355,7 @@ return(
                 body: JSON.stringify({
                     nome,
                     sobrenome,
-                    cpf,
+                    cpf: cpfSemCaracteres,
                     imagem: imagemBase64,
                     transportadora: 6
                 })
@@ -402,14 +423,6 @@ return(
       </Alert>
 
     </Collapse>
-    <Button
-      disabled={open}
-      variant="outlined"
-      onClick={() => {
-        setOpen(true);
-      }}
-    >Re-open
-    </Button>
   </Box> 
   </Grid>
   </Box>
