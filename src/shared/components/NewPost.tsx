@@ -160,6 +160,7 @@ export const NewPost = ({ image,handleResult  }: { image: ImageProps; handleResu
             src={friends.face.blobUrl}
             alt=""
             srcSet={friends.face.srcset}
+            style={{ width: '100%', height: '40%' }}
           />
         </>
       ) : (

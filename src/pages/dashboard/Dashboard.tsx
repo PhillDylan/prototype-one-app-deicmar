@@ -1,6 +1,6 @@
 import { LayoutBaseDePagina } from "../../shared/layouts"
 import { PhotoCamera } from "@mui/icons-material";
-import { Alert, AlertColor, AlertTitle, Button, Divider, Grid, IconButton, Typography } from "@mui/material";
+import { Alert, AlertColor, AlertTitle, Button, Divider, Grid, IconButton, Paper, Typography } from "@mui/material";
 import { Routes, Route, Navigate } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import TextField from '@mui/material/TextField';
@@ -188,55 +188,50 @@ return(
   <>
     <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
       
-    <Box style={{width: '100%', height: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+ <Grid container style={{ width: '90%', height: '45%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+ marginX={2} padding={1} paddingX={1} component={Paper} elevation={10}
+ >
+  {image ? (
+    <Grid item style={{ marginBottom: '16px' }}>
+      <NewPost image={image} handleResult={updateImage} />
+    </Grid>
+  ) : (
+    <Grid item style={{ marginBottom: '16px' }}>
+      <div className="newPostCard">
+        <div className="addPost">
+          <label htmlFor="file">
+            <IconButton color="primary" aria-label="upload picture" component="span">
+              <PhotoCamera />
+            </IconButton>
+            <Typography>Nenhuma imagem selecionada.</Typography>
+          </label>
+          <input onChange={handleImagemSelecionada} id="file" style={{ display: 'none' }} type="file" />
+        </div>
+      </div>
+    </Grid>
+  )}
+</Grid>
 
-    {image ? (
-    
-      <Box style={{width: '100%', height: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-     
-          <NewPost image={image}  handleResult={updateImage}/>
 
 
-          <Button variant="contained" color="primary" onClick={handleApagarImagem}>Apagar Imagem</Button>
-          </Box>
-    ) : (
-        <Grid>
-          <div className="newPostCard">
-            <div className="addPost">
-              <label htmlFor="file">
-                <IconButton
-                  color="primary"
-                  aria-label="upload picture"
-                  component="span"
-                >
-                  <PhotoCamera />
-                </IconButton>
-                <Typography>
-                  Nenhuma imagem selecionada.
-                </Typography>
-              </label>
-              <input
-                onChange={handleImagemSelecionada}
-                id="file"
-                style={{ display: 'none' }}
-                type="file"
-              />
-            </div>
-          </div>
-        </Grid>
-    )}
-</Box>
 
-  <Divider />
         <Grid
         container
+        marginX={2} padding={1} paddingX={1} 
         spacing={2}
-        columns={{xs: 12, md: 3}}
-        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        style={{ width: '90%'}}
         direction="column"
         justifyContent="center"
         alignItems="center"
+       component={Paper} elevation={1}
         >
+          {image && (
+                      <Grid item>
+                        <Button variant="contained" color="primary" onClick={handleApagarImagem}>
+                          Apagar Imagem
+                        </Button>
+                      </Grid>
+                    )}
             <Grid
               item
               xs={8}
@@ -323,8 +318,96 @@ return(
                     />
 
               </Grid>
+                      <Grid item >
+                        <Collapse in={open}>
+                                <Alert
+                                variant="filled"
+                            severity = {severity}
+                            action={
+                              <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                  setOpen(false);
+                                }}
+                              >
+                                
+                                <CloseIcon fontSize="inherit" />
+                              </IconButton>
+                            }
+                            sx={{ mb: 2 }}
+                          >
+                            <AlertTitle>{severity}</AlertTitle>
+                            {erroEnvio || mensagemEnvio}
+                          </Alert>
+
+                        </Collapse>
+                      </Grid>
+              <Grid item >
+                    <Button
+                      variant="contained"
+                      endIcon={<SendIcon />}
+                      disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true || temErro}
+                      onClick={async () => {
+                          setStatusEnvio("enviando");
+                          const username = 'admin';
+                          const password = 'speed12345'; // replace this with the decrypted password
+                          const token = btoa(`${username}:${password}`);
+                          const cpfSemCaracteres = removeCaracteresCPF(cpf);
+
+                          fetch('http://192.168.13.224:1880/api/cadastro', {
+                              method: 'POST',
+                              headers: {
+                                'Authorization': 'Basic ' + token
+                              },
+                              body: JSON.stringify({
+                                  nome,
+                                  sobrenome,
+                                  cpf: cpfSemCaracteres,
+                                  imagem: imagemBase64,
+                                  transportadora: 6
+                              })
+                          })
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log(data);
+                              console.log(data.message);
+                              console.log(data.status);
+                              if (data.status === 'Success') {
+                                setStatusEnvio("pronto");             
+                                setNome("");
+                                setSobrenome("");
+                                setCpf("");
+                                setImagemBase64(undefined);
+                                setImagemSelecionada(undefined); // reset the image preview
+                                setSeverity('success');
+                                setOpen(true);
+                                setMensagemEnvio(data.message);
+                                setErroEnvio(undefined);
+                              }else{
+                                setSeverity('error');
+                                setOpen(true);
+                                setMensagemEnvio(data.message);
+                                setStatusEnvio("erro");
+                                setErroEnvio(undefined);
+                              }
+                            })
+                          .catch(error => {
+                            console.error(error);
+                            setSeverity('error');
+                            setOpen(true);
+                            setStatusEnvio("erro");
+                            setErroEnvio(error.message); // ou outra forma de capturar o motivo do erro
+                          });              
+                      }}
+                    >
+                      {statusEnvio === "enviando" ? "ENVIANDO..." : statusEnvio === "pronto"? "ENVIADO" : statusEnvio === "erro"? "REENVIAR" : "SEND"}
+                    </Button>
+                                      
+              </Grid>
         </Grid>
-  <Divider />
+
 
 
     <Box gap={1}> 
@@ -336,94 +419,9 @@ return(
           alignItems="center">
     <Box>
   
-      <Button
-        variant="contained"
-        endIcon={<SendIcon />}
-        disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true || temErro}
-        onClick={async () => {
-            setStatusEnvio("enviando");
-            const username = 'admin';
-            const password = 'speed12345'; // replace this with the decrypted password
-            const token = btoa(`${username}:${password}`);
-            const cpfSemCaracteres = removeCaracteresCPF(cpf);
-
-            fetch('http://192.168.13.224:1880/api/cadastro', {
-                method: 'POST',
-                headers: {
-                  'Authorization': 'Basic ' + token
-                },
-                body: JSON.stringify({
-                    nome,
-                    sobrenome,
-                    cpf: cpfSemCaracteres,
-                    imagem: imagemBase64,
-                    transportadora: 6
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                console.log(data.message);
-                console.log(data.status);
-                if (data.status === 'Success') {
-                  setStatusEnvio("pronto");             
-                  setNome("");
-                  setSobrenome("");
-                  setCpf("");
-                  setImagemBase64(undefined);
-                  setImagemSelecionada(undefined); // reset the image preview
-                  setSeverity('success');
-                  setOpen(true);
-                  setMensagemEnvio(data.message);
-                  setErroEnvio(undefined);
-                }else{
-                  setSeverity('error');
-                  setOpen(true);
-                  setMensagemEnvio(data.message);
-                  setStatusEnvio("erro");
-                  setErroEnvio(undefined);
-                }
-              })
-            .catch(error => {
-              console.error(error);
-              setSeverity('error');
-              setOpen(true);
-              setStatusEnvio("erro");
-              setErroEnvio(error.message); // ou outra forma de capturar o motivo do erro
-            });              
-        }}
-      >
-        {statusEnvio === "enviando" ? "ENVIANDO..." : statusEnvio === "pronto"? "ENVIADO" : statusEnvio === "erro"? "REENVIAR" : "SEND"}
-      </Button>
-
+     
     </Box>   
 
-    <Box sx={{ width: '100%' }}>
-    <Collapse in={open}>
-            <Alert
-            variant="filled"
-        severity = {severity}
-        action={
-          <IconButton
-            aria-label="close"
-            color="inherit"
-            size="small"
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            
-            <CloseIcon fontSize="inherit" />
-          </IconButton>
-        }
-        sx={{ mb: 2 }}
-      >
-        <AlertTitle>{severity}</AlertTitle>
-        {erroEnvio || mensagemEnvio}
-      </Alert>
-
-    </Collapse>
-  </Box> 
   </Grid>
   </Box>
         
