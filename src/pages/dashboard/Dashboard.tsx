@@ -210,8 +210,8 @@ return(
           <Grid
             container
             justifyContent="center"
-            direction={{xs:'column', md:'row',}}
-            alignItems={{ xs: 'stretch', md: 'center' }}
+            direction={{xs:'column', md:'column',}}
+            alignItems={{ xs: 'center', md: 'center' }}
             sx={{
               '& > div': {
                 backdropFilter: 'blur(8px)', // Define o efeito de desfoque
@@ -226,19 +226,19 @@ return(
             <Grid
               container
               justifyContent="center"
-              alignItems={{ xs: 'stretch', md: 'center' }}
+              alignItems={{ xs: 'center', md: 'center' }}
               sx={{
                 '& > div': {
                   backdropFilter: 'blur(8px)', // Define o efeito de desfoque
                   borderRadius: 8,
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Define a cor de fundo transparente
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)', // Define a cor de fundo transparente
   
                 },
               }}
               padding={{xs:theme.spacing(3),md:theme.spacing(12) }}
             >
           {image ? (
-            <Grid item style={{ marginTop: '16px', marginBottom: '16px' }}>
+            <Grid item>
               <NewPost image={image} handleResult={updateImage} />
             </Grid>
           ) : (
@@ -262,10 +262,6 @@ return(
         
         <Grid
           item
-          direction={{
-            xs:'column', 
-            md:'row'
-          }}
           justifyContent={{xs:'stretch',md:'space-between'}}
           alignItems={{md:'center',xs:'center'}}
           component={Paper} elevation={1}

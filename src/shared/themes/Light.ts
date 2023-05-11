@@ -20,7 +20,7 @@ export const LightTheme = createTheme({
             paper: '#ffffff',
         },
         text:{
-            primary: blue[700],
+            primary: "#ffffff",
         }
     },
     typography:{
