@@ -1,6 +1,6 @@
 import { LayoutBaseDePagina } from "../../shared/layouts"
 import { PhotoCamera } from "@mui/icons-material";
-import { Alert, AlertColor, AlertTitle, Button, Divider, Grid, IconButton, Paper, Typography,  useTheme } from "@mui/material";
+import { Alert, AlertColor, AlertTitle, Button, CardMedia, Divider, Grid, IconButton, Paper, Typography,  backdropClasses,  useTheme } from "@mui/material";
 import { Routes, Route, Navigate } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import TextField from '@mui/material/TextField';
@@ -11,7 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { NewPost } from "../../shared/components";
 import './App.css';
 import { alpha } from '@mui/material/styles';
-import Speed from '../../shared/assets/img/Speed.png'
+import BackgroundImage from '../../shared/assets/img/BackgroundImage.png'
 
 export const Dashboard = () => {
 
@@ -201,20 +201,48 @@ return(
         alignItems={{xs:'stretch', md:'center',}}
         spacing={3}
         padding={{xs:theme.spacing(3),md:theme.spacing(12) }}
-      >     
-        <Grid
-          container
-          component={Paper}
-          elevation={1}
-          justifyContent="center"
-          alignItems={{xs:'stretch', md:'center',}}
-        >
+        style={{
+          backgroundImage: `url(${BackgroundImage})`, // Define a cor de fundo transparente
+          color: 'white', // Define a cor do texto como branca
+
+        }}
+      >   
+          <Grid
+            container
+            justifyContent="center"
+            direction={{xs:'column', md:'row',}}
+            alignItems={{ xs: 'stretch', md: 'center' }}
+            sx={{
+              '& > div': {
+                backdropFilter: 'blur(8px)', // Define o efeito de desfoque
+                borderRadius: 8,
+
+                borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Define a cor de fundo transparente
+
+              },
+            }}
+          >
+            <Grid
+              container
+              justifyContent="center"
+              alignItems={{ xs: 'stretch', md: 'center' }}
+              sx={{
+                '& > div': {
+                  backdropFilter: 'blur(8px)', // Define o efeito de desfoque
+                  borderRadius: 8,
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Define a cor de fundo transparente
+  
+                },
+              }}
+              padding={{xs:theme.spacing(3),md:theme.spacing(12) }}
+            >
           {image ? (
             <Grid item style={{ marginTop: '16px', marginBottom: '16px' }}>
               <NewPost image={image} handleResult={updateImage} />
             </Grid>
           ) : (
-            <Grid item style={{ marginBottom: '16px' }} >
+            <Grid item >
               <div className="newPostCard">
                 <div className="addPost">
                   <label htmlFor="file">
@@ -228,12 +256,12 @@ return(
               </div>
             </Grid>
           )}
-        </Grid>
+
 
         <Divider />
         
         <Grid
-          container
+          item
           direction={{
             xs:'column', 
             md:'row'
@@ -253,32 +281,32 @@ return(
             item
           >
             <TextField
-              placeholder={'NOME'}
+              placeholder='NOME'
               error={nome.length < 3}
               required
               InputLabelProps={{
                 shrink: true,
               }}
               id="outlined-required"
-              label={'Required'}
+              label={<Typography>Required</Typography>}
               margin={'normal'}
               value={nome}
               onChange={(event) => {
               setNome(event.target.value);
               setStatusEnvio("certo"); 
               }}
-              helperText="Digite o Nome"
+              helperText={<Typography>Digite o nome</Typography>}
             />
           </Grid>
           <Grid
           item 
           >
             <TextField
-              placeholder={'SOBRENOME'}
+              placeholder='SOBRENOME'
               error={sobrenome.length < 3}
               required
               id="outlined-required"
-              label={'Required'}
+              label={<Typography>Required</Typography>}
               value={sobrenome}
               InputLabelProps={{
                 shrink: true,
@@ -288,7 +316,7 @@ return(
                 setSobrenome(event.target.value);
                 setStatusEnvio("certo"); 
               }}
-              helperText="Digite o Sobrenome"
+              helperText={<Typography>Digite o Sobrenome</Typography>}
             />
           </Grid>
                             
@@ -297,10 +325,10 @@ return(
           >
             <TextField
               margin={'normal'}
-              placeholder={'000.000.000-00'}
+              placeholder='00.000.000-00'
               error={!ValidadorCPF(cpf)}
               id="filled-number"
-              label={'Required'}
+              label={<Typography>Required</Typography>}
               type="tel"
               InputLabelProps={{
                 shrink: true,
@@ -325,7 +353,7 @@ return(
               inputProps={{
                 maxLength: 14, // Define o limite máximo de caracteres
               }}
-              helperText={!ValidadorCPF(cpf) ? "Digite um CPF válido" : "Digite o CPF"}
+              helperText={!ValidadorCPF(cpf) ? <Typography>"Digite um CPF válido"</Typography> : <Typography>"Digite o CPF"</Typography>}
             />
           </Grid>
           <Grid item >
@@ -413,6 +441,8 @@ return(
               {statusEnvio === "enviando" ? "ENVIANDO..." : statusEnvio === "pronto"? "ENVIADO" : statusEnvio === "erro"? "REENVIAR" : "SEND"}
             </Button>                  
           </Grid>
+          </Grid>
+        </Grid>
         </Grid>
       </Grid>
     </LayoutBaseDePagina>

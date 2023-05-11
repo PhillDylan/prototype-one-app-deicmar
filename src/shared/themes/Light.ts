@@ -18,6 +18,15 @@ export const LightTheme = createTheme({
         background:{
             default: '#f7f6f3',
             paper: '#ffffff',
+        },
+        text:{
+            primary: blue[700],
         }
-    }
+    },
+    typography:{
+        allVariants:{
+            color: blue[700],
+        }
+    },
+    
 })
