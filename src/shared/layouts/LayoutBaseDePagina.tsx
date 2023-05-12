@@ -4,6 +4,7 @@ import { Box } from "@mui/system";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useAppDrawerContext } from "../contexts";
 import Speed from '../../shared/assets/img/Speed.png'
+import BackgroundImage from '../../shared/assets/img/BackgroundImage.png'
 
 interface ILayoutBaseDePaginaProps{
 	children : React.ReactNode
@@ -25,8 +26,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
     <Box 
       height='100%' 
       display='flex' 
-      flexDirection='column' 
-      gap={1}
+      flexDirection='column' gap={1}
       sx={(theme) => ({
         '& > div': {
           '&::-webkit-scrollbar': { height: 10, WebkitAppearance: 'none' },
@@ -62,16 +62,33 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
           {barraDeFerramentas}
         </Box>
         )}
-        
-        <Box flex={1} overflow='auto' >
-          {children}
-        </Box>
 
+        <Box flex={1} overflow='auto' >
+        <Grid
+          component={Paper} 
+          elevation={1}
+          style={{
+            height:'100%',
+            width:'100%',
+            backgroundImage: `url(${BackgroundImage})`,
+            color: 'white',
+          }}
+        >   
+        
+        <Grid item         sx={{
+            width: '100%',
+            maxHeight: '100%',
+            overflow: 'auto',}}>
+          {children}
+          </Grid>
+          </Grid>
+          </Box>
+
+          
         <Grid 
           container 
           style={{ 
             display: 'flex', 
-
             justifyContent: 'center', 
             alignItems: 'center' 
           }}

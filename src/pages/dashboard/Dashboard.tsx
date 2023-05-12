@@ -154,6 +154,10 @@ useEffect(() => {
 
 const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
   if (event.target.files && event.target.files.length > 0) {
+    setFile(undefined);
+    setImage(undefined);
+    setImagemBase64(undefined);
+    setImagemSelecionada(undefined);
     const imagem = event.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(imagem);
@@ -192,26 +196,32 @@ return(
   <>
     <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
       <Divider />
-
       <Grid
-        component={Paper} 
-        elevation={1}
-        direction={{xs:'column', md:'row',}}
-        justifyContent="center"
-        alignItems={{xs:'stretch', md:'center',}}
-        spacing={3}
-        padding={{xs:theme.spacing(3),md:theme.spacing(12) }}
+        container
+        direction='column'
+        justifyContent='center'
+        alignItems='center'
+        padding={{xs: theme.spacing(5), md: theme.spacing(20)}}
         style={{
-          backgroundImage: `url(${BackgroundImage})`, // Define a cor de fundo transparente
-          color: 'white', // Define a cor do texto como branca
-
+          maxHeight: '100%',
+          overflow: 'auto',}}
+        sx={{
+            '& > div': {
+            backdropFilter: 'blur(8px)',
+            borderRadius: 8,
+            borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            },
         }}
-      >   
+        >
           <Grid
             container
-            justifyContent="center"
-            direction={{xs:'column', md:'column',}}
-            alignItems={{ xs: 'center', md: 'center' }}
+            direction='column'
+            textAlign="center"
+            justifyContent={{xs: "center",md: 'center'}}
+            alignItems='center'
+            padding={{xs:theme.spacing(3),md:theme.spacing(12) }}
+            
             sx={{
               '& > div': {
                 backdropFilter: 'blur(8px)', // Define o efeito de desfoque
@@ -223,60 +233,45 @@ return(
               },
             }}
           >
-            <Grid
-              container
-              justifyContent="center"
-              alignItems={{ xs: 'center', md: 'center' }}
-              sx={{
-                '& > div': {
-                  backdropFilter: 'blur(8px)', // Define o efeito de desfoque
-                  borderRadius: 8,
-                  backgroundColor: 'rgba(0, 0, 0, 0.1)', // Define a cor de fundo transparente
-  
-                },
-              }}
-              padding={{xs:theme.spacing(3),md:theme.spacing(12) }}
-            >
-          {image ? (
-            <Grid item>
-              <NewPost image={image} handleResult={updateImage} />
-            </Grid>
-          ) : (
-            <Grid item >
-              <div className="newPostCard">
-                <div className="addPost">
-                  <label htmlFor="file">
-                    <IconButton color="primary" aria-label="upload picture" component="span">
-                      <PhotoCamera />
-                    </IconButton>
-                    <Typography>Nenhuma imagem selecionada.</Typography>
-                  </label>
-                  <input onChange={handleImagemSelecionada} id="file" style={{ display: 'none' }} type="file" />
-                </div>
-              </div>
-            </Grid>
-          )}
-
-
-        <Divider />
-        
         <Grid
           item
-          justifyContent={{xs:'stretch',md:'space-between'}}
-          alignItems={{md:'center',xs:'center'}}
-          component={Paper} elevation={1}
         >
+          {image ? (
+              <NewPost image={image} handleResult={updateImage} />
+          ) : (
+                    <>
+                      <label htmlFor="file">
+                        <IconButton color="primary" aria-label="upload picture" component="span">
+                          <PhotoCamera />
+                        </IconButton>
+                      </label>
+                      <input onChange={handleImagemSelecionada} id="file" style={{ display: 'none' }} type="file" />
+                  <Typography>Nenhuma imagem selecionada.</Typography>
+                  </> 
+          )}
+
           {image && (
-            <Grid item>
-              <Button variant="contained" color="primary" onClick={handleApagarImagem}>
-                Apagar Imagem
-              </Button>
+            <Grid container textAlign='center' alignItems='center' alignContent='center'>
+            <Grid item >
+                  <label htmlFor="file">
+                    <IconButton color="primary" aria-label="upload picture" component="span" >
+                      <PhotoCamera />
+                    </IconButton>
+                    </label>
+                  <input onChange={handleImagemSelecionada} id="file" style={{ display: 'none' }} type="file" />
+                  </Grid>
+                  <Grid item>
+                    <Typography>Trocar imagem</Typography>
+                  </Grid>
             </Grid>
           )}
           <Grid
             item
+            paddingX={{xs: theme.spacing(5),md: theme.spacing(20),}}
+            
           >
             <TextField
+              fullWidth 
               placeholder='NOME'
               error={nome.length < 3}
               required
@@ -296,8 +291,11 @@ return(
           </Grid>
           <Grid
           item 
+          paddingX={{xs: theme.spacing(5),md: theme.spacing(20),}}
+          textAlign="center"
           >
             <TextField
+              fullWidth 
               placeholder='SOBRENOME'
               error={sobrenome.length < 3}
               required
@@ -318,8 +316,10 @@ return(
                             
           <Grid
           item
+          paddingX={{xs: theme.spacing(5),md: theme.spacing(20),}}
           >
             <TextField
+              fullWidth 
               margin={'normal'}
               placeholder='00.000.000-00'
               error={!ValidadorCPF(cpf)}
@@ -380,7 +380,7 @@ return(
             <Button
               variant="contained"
               endIcon={<SendIcon />}
-              disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true || temErro}
+              disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true || temErro || !imagemBase64} 
               onClick={async () => {
                   setStatusEnvio("enviando");
                   const username = 'admin';
@@ -438,7 +438,6 @@ return(
             </Button>                  
           </Grid>
           </Grid>
-        </Grid>
         </Grid>
       </Grid>
     </LayoutBaseDePagina>

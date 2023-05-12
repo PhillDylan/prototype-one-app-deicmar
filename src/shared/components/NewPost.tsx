@@ -155,13 +155,11 @@ export const NewPost = ({ image,handleResult  }: { image: ImageProps; handleResu
           </div> 
       )}
       {friends.face ? (
-        <>
           <img
             src={friends.face.blobUrl}
             alt=""
             srcSet={friends.face.srcset}
           />
-        </>
       ) : (
         <div style={{ display: showMessage ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center'   }}>
           <ReactLoading  type = {'spin'} color={'#000000'} height={50} width={50} />
