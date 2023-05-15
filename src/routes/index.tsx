@@ -136,18 +136,18 @@ export const AppRoutes = () => {
     setDrawerOptions([
       {
         icon: "home",
-        path: "/pagina-inicial",
-        label: "Página inicial",
+        path: "/cadastro-facial",
+        label: "Cadastro facial",
       },
       {
         icon: "home",
-        path: "/pagina-inicial2",
-        label: "Página inicial2",
+        path: "/cadastro-lacre",
+        label: "Cadastro lacre",
       },
       {
         icon: "home",
-        path: "/pagina-inicial3",
-        label: "Página inicial3",
+        path: "/checklist",
+        label: "Checklist",
       },
     ]);
   }, []);
@@ -156,11 +156,11 @@ export const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/pagina-inicial" element={<Dashboard />} />
-      <Route path="/pagina-inicial2" element={<Dashboard2 />} />
-      <Route path="/pagina-inicial3" element={<Dashboard3 />} />
+      <Route path="/cadastro-facial" element={<Dashboard />} />
+      <Route path="/cadastro-lacre" element={<Dashboard2 />} />
+      <Route path="/checklist" element={<Dashboard3 />} />
 
-      <Route path="*" element={<Navigate to="/pagina-inicial" />} />
+      <Route path="*" element={<Navigate to="/cadastro-facial" />} />
     </Routes>
   );
 };

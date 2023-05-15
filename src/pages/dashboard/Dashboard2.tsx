@@ -1,7 +1,7 @@
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { PhotoCamera } from "@mui/icons-material";
 import {
-    Button,
+  Button,
   Divider,
   Grid,
   IconButton,
@@ -13,26 +13,22 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/system";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 
-import BackgroundImage from "../../shared/assets/img/BackgroundImage.png";
-
 export const Dashboard2 = () => {
   const [Lacre, setLacre] = useState("");
-  const [image, setImage] = useState<{
-    url: string;
-    width: number;
-    height: number;
-  } | undefined>();
-  const [file, setFile] = useState<Blob | undefined>();
-  const [imagemSelecionada, setImagemSelecionada] = useState<
-    string | undefined
-  >();
-  const [listaItens, setListaItens] = useState<string[]>([]);
+  const [image, setImage] = useState<{ url: string; width: number; height: number } | undefined>();
+  const [file, setFile] = useState<File | undefined>();
+  const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
+  const [listaItens, setListaItens] = useState<{ lacre: string; imagem: File }[]>(() => {
+    const storedItems = localStorage.getItem("listaItens");
+    return storedItems ? JSON.parse(storedItems) : [];
+  });
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const getImage = () => {
@@ -40,25 +36,11 @@ export const Dashboard2 = () => {
         const img = new Image();
         img.src = URL.createObjectURL(file);
         img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          if (ctx != null) {
-            canvas.width = img.naturalWidth;
-            canvas.height = img.naturalHeight;
-            ctx.drawImage(img, 0, 0);
-            canvas.toBlob((blob) => {
-              if (blob) {
-                const image = new Image();
-                image.src = URL.createObjectURL(blob);
-                image.onload = () => {};
-                setImage({
-                  url: image.src,
-                  width: image.width,
-                  height: image.height,
-                });
-              }
-            }, "image/jpeg", 1);
-          }
+          setImage({
+            url: img.src,
+            width: img.naturalWidth,
+            height: img.naturalHeight,
+          });
         };
       }
     };
@@ -66,39 +48,38 @@ export const Dashboard2 = () => {
     getImage();
   }, [file]);
 
-  const handleImagemSelecionada = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      setFile(undefined);
-      setImage(undefined);
-      setImagemSelecionada(undefined);
       const imagem = event.target.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(imagem);
-      reader.onload = async () => {
-        let imagemBase64 = reader.result as string;
-        const index = imagemBase64.indexOf(",");
-        if (index !== -1) {
-          imagemBase64 = imagemBase64.slice(index + 1);
-        }
-        setImagemSelecionada(imagemBase64);
-      };
-      reader.onerror = () => {
-        console.error("Erro ao converter imagem em base64");
-      };
+      setImagemSelecionada(URL.createObjectURL(imagem));
       setFile(imagem);
     }
   };
 
+
+  useEffect(() => {
+    // Salvar os itens no localStorage sempre que houver uma alteração na listaItens
+    localStorage.setItem("listaItens", JSON.stringify(listaItens));
+  }, [listaItens]);
+
+
+
   const adicionarItem = () => {
-    if (imagemSelecionada && Lacre) {
-      setListaItens([...listaItens, Lacre]);
+    if (imagemSelecionada && Lacre && file) {
+      const novoItem = {
+        lacre: Lacre,
+        imagem: file
+      };
+      setListaItens([...listaItens, novoItem]);
+
       setLacre("");
       setImage(undefined);
+      setFile(undefined);
       setImagemSelecionada(undefined);
     }
   };
+  
+  
 
   const removerItem = (index: number) => {
     const novaLista = [...listaItens];
@@ -109,7 +90,10 @@ export const Dashboard2 = () => {
   const enviarLista = () => {
     // Lógica para enviar a lista com nomes e fotos em ordem
   };
+
   const theme = useTheme();
+
+
 
   return (
     <>
@@ -134,14 +118,7 @@ export const Dashboard2 = () => {
             container
             direction="column"
             padding={{ xs: theme.spacing(5), md: theme.spacing(20) }}
-            sx={{
-              "& > div": {
-                backdropFilter: "blur(8px)",
-                borderRadius: 8,
-                borderColor: theme.palette.mode === "dark" ? "" : "#E7EBF0",
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-              },
-            }}
+
           >
             <Grid
               container
@@ -226,20 +203,20 @@ export const Dashboard2 = () => {
                 subheader={<li />}
               >
                 {listaItens.map((item, index) => (
-  <li key={`item-${index}`}>
-    <ListItem>
-      <ListItemText primary={item} />
-      <IconButton
-        color="secondary"
-        edge="end"
-        aria-label="delete"
-        onClick={() => removerItem(index)}
-      >
-        <DeleteIcon />
-      </IconButton>
-    </ListItem>
-  </li>
-))}
+    <li key={`item-${index}`}>
+      <ListItem>
+      <ListItemText primary={item.lacre} />
+        <IconButton
+          color="secondary"
+          edge="end"
+          aria-label="delete"
+          onClick={() => removerItem(index)}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </ListItem>
+    </li>
+  ))}
                      
               </List>
             </Grid>

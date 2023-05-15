@@ -219,27 +219,18 @@ return(
             direction='column'
             textAlign="center"
             justifyContent={{xs: "center",md: 'center'}}
-            alignItems='center'
             padding={{xs:theme.spacing(3),md:theme.spacing(12) }}
-            
-            sx={{
-              '& > div': {
-                backdropFilter: 'blur(8px)', // Define o efeito de desfoque
-                borderRadius: 8,
-
-                borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Define a cor de fundo transparente
-
-              },
-            }}
           >
         <Grid
           item
+
         >
           {image ? (
+
               <NewPost image={image} handleResult={updateImage} />
+
           ) : (
-                    <>
+                  <>
                       <label htmlFor="file">
                         <IconButton color="primary" aria-label="upload picture" component="span">
                           <PhotoCamera />

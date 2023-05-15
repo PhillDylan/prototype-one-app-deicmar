@@ -1,63 +1,82 @@
-import { BarraDeFerramentas } from "../../shared/components"
-import { LayoutBaseDePagina } from "../../shared/layouts"
-import PropTypes from 'prop-types';
-import BellIcon from '@heroicons/react/24/solid/BellIcon';
-import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
-import Bars3Icon from '@heroicons/react/24/solid/Bars3Icon';
-import MagnifyingGlassIcon from '@heroicons/react/24/solid/MagnifyingGlassIcon';
-import {
-  Avatar,
-  Badge,
-  Box,
-  Drawer,
-  IconButton,
-  Paper,
-  Stack,
-  SvgIcon,
-  Tooltip,
-  useMediaQuery,
-  useTheme
-} from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { Divider, Grid, useTheme } from "@mui/material";
+import { LayoutBaseDePagina } from "../../shared/layouts";
+import React, { useState, useEffect, useRef } from "react";
+import { green, pink, red } from '@mui/material/colors';
+import Checkbox from '@mui/material/Checkbox';
 
-const SIDE_NAV_WIDTH = 280;
-const TOP_NAV_HEIGHT = 1224;
-
-
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 export const Dashboard3 = () => {
-    const theme = useTheme();
+  const theme = useTheme();
 
-    return(
-        <LayoutBaseDePagina
-            titulo="Pagina de Teste"
-            barraDeFerramentas={(
-                <BarraDeFerramentas 
-                    mostrarInputBusca="true"
-                    textoBotaoNovo="Nova"
+  return (
+    <>
+      <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>
+        <Divider />
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          padding={{ xs: theme.spacing(5), md: theme.spacing(20) }}
+          sx={{
+            "& > div": {
+              backdropFilter: "blur(8px)",
+              borderRadius: 8,
+              borderColor: theme.palette.mode === "dark" ? "" : "#E7EBF0",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+          }}
+        >
+          <Grid
+            container
+            direction="column"
+            padding={{ xs: theme.spacing(5), md: theme.spacing(20) }}
+
+          >
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+              padding={{ xs: theme.spacing(3), md: theme.spacing(8) }}
+              sx={{
+                "& > div": {
+                  backdropFilter: "blur(8px)",
+                  borderRadius: 8,
+                  borderColor: theme.palette.mode === "dark" ? "" : "#E7EBF0",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                },
+              }}
+            >
+             
+              <Grid item>
+              <Checkbox
+                  {...label}
+                  defaultChecked
+                  sx={{
+                    color: green[800],
+                    '&.Mui-checked': {
+                      color: green[600],
+                    },
+                  }}
                 />
-            )}>
-          
-          <Box
+                <Checkbox
+                  {...label}
+                  defaultChecked
+                  sx={{
+                    color: red[800],
+                    '&.Mui-checked': {
+                      color: red[600],
+                    },
+                  }}
+                />
+              </Grid>
 
-        sx={{
-          backdropFilter: 'blur(6px)',
-          backgroundColor: (theme) => alpha(theme.palette.background.default, 0.8),
-          position: 'sticky',
-          left: {
-            lg: `${SIDE_NAV_WIDTH}px`
-          },
-          top: 0,
-          width: {
-            lg: `calc(100% - ${SIDE_NAV_WIDTH}px)`
-          },
-          zIndex: (theme) => theme.zIndex.appBar
-        }}
-        height={theme.spacing(5)} marginX={1} padding='85%' paddingX={2} display="flex" gap={1} alignItems="center" component={Paper} elevation={24}
-      >
-       
-      </Box>
-        
-        </LayoutBaseDePagina>
-    );
+
+            </Grid>
+          </Grid>
+        </Grid>
+      </LayoutBaseDePagina>
+    </>
+  );
 };
