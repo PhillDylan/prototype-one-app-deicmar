@@ -3,11 +3,16 @@ import { LayoutBaseDePagina } from "../../shared/layouts";
 import React, { useState, useEffect, useRef } from "react";
 import { green, pink, red } from '@mui/material/colors';
 import Checkbox from '@mui/material/Checkbox';
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 export const Dashboard3 = () => {
   const theme = useTheme();
+  const listaItens = useSelector((state: RootState) => state.listaItens);
+
+  console.log('lista itens'+listaItens);
 
   return (
     <>

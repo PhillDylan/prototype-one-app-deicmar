@@ -18,6 +18,8 @@ import TextField from "@mui/material/TextField";
 import { Box } from "@mui/system";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import { useSelector, useDispatch } from "react-redux";
+import store, { RootState } from "./store";
 
 export const Dashboard2 = () => {
   const [Lacre, setLacre] = useState("");
@@ -29,6 +31,7 @@ export const Dashboard2 = () => {
     return storedItems ? JSON.parse(storedItems) : [];
   });
   const imageRef = useRef<HTMLImageElement>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getImage = () => {
@@ -76,6 +79,9 @@ export const Dashboard2 = () => {
       setImage(undefined);
       setFile(undefined);
       setImagemSelecionada(undefined);
+
+      dispatch({ type: "SET_LISTA_ITENS", payload: [...listaItens, novoItem] });
+
     }
   };
   
