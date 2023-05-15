@@ -10,9 +10,25 @@ const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 export const Dashboard3 = () => {
   const theme = useTheme();
-  const listaItens = useSelector((state: RootState) => state.listaItens);
+  const storedListaItens = localStorage.getItem("listaItens");
+  const [listaItens, setListaItens] = useState(storedListaItens ? JSON.parse(storedListaItens) : []);
+  const [greenChecked, setGreenChecked] = useState(false);
+  const [redChecked, setRedChecked] = useState(true);
 
-  console.log('lista itens'+listaItens);
+  useEffect(() => {
+    if (listaItens.length > 0) {
+      setGreenChecked(true);
+      setRedChecked(false);
+    } else {
+      setGreenChecked(false);
+      setRedChecked(true);
+    }
+  }, [listaItens]);
+
+  useEffect(() => {
+    localStorage.setItem("listaItens", JSON.stringify(listaItens));
+  }, [listaItens]);
+
 
   return (
     <>
@@ -37,7 +53,6 @@ export const Dashboard3 = () => {
             container
             direction="column"
             padding={{ xs: theme.spacing(5), md: theme.spacing(20) }}
-
           >
             <Grid
               container
@@ -53,11 +68,11 @@ export const Dashboard3 = () => {
                 },
               }}
             >
-             
               <Grid item>
-              <Checkbox
+                <Checkbox
                   {...label}
-                  defaultChecked
+                  checked={greenChecked}
+                  disabled={greenChecked}
                   sx={{
                     color: green[800],
                     '&.Mui-checked': {
@@ -67,7 +82,8 @@ export const Dashboard3 = () => {
                 />
                 <Checkbox
                   {...label}
-                  defaultChecked
+                  checked={redChecked}
+                  disabled={redChecked}
                   sx={{
                     color: red[800],
                     '&.Mui-checked': {
@@ -76,8 +92,6 @@ export const Dashboard3 = () => {
                   }}
                 />
               </Grid>
-
-
             </Grid>
           </Grid>
         </Grid>
