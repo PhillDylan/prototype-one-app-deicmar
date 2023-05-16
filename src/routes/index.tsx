@@ -135,17 +135,17 @@ export const AppRoutes = () => {
   useEffect(() => {
     setDrawerOptions([
       {
-        icon: "home",
+        icon: "group_add",
         path: "/cadastro-facial",
         label: "Cadastro facial",
       },
       {
-        icon: "home",
+        icon: "edit_note",
         path: "/cadastro-lacre",
         label: "Cadastro lacre",
       },
       {
-        icon: "home",
+        icon: "fact_check",
         path: "/checklist",
         label: "Checklist",
       },

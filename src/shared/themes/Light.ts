@@ -19,13 +19,13 @@ export const LightTheme = createTheme({
             default: '#f7f6f3',
             paper: '#ffffff',
         },
-        text:{
+   /*     text:{
             primary: "#ffffff",
-        }
+        }*/
     },
     typography:{
         allVariants:{
-            color: blue[700],
+            color: "black",
         }
     },
     

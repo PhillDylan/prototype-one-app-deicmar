@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useAppDrawerContext } from "../contexts";
 import Speed from '../../shared/assets/img/Speed.png'
-import BackgroundImage from '../../shared/assets/img/BackgroundImage.png'
+
 
 interface ILayoutBaseDePaginaProps{
 	children : React.ReactNode
@@ -34,7 +34,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
             borderRadius: 8,
             border: '2px solid',
             borderColor: theme.palette.mode === 'dark' ? '' : '#E7EBF0',
-            backgroundColor: 'rgba(0 0 0 / 0.5)',
+            backgroundColor: 'rgba(0 0 0 / 0.2)',
           },
         },
       })}
@@ -67,12 +67,11 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
         <Grid
           component={Paper} 
           elevation={1}
-          style={{
-            height:'100%',
-            width:'100%',
-            backgroundImage: `url(${BackgroundImage})`,
-            color: 'white',
-          }}
+          sx={{
+            height: '100%',
+            maxHeight: '100%',
+            width: '100%',
+            overflow: 'auto',}}
         >   
         
         <Grid item         sx={{

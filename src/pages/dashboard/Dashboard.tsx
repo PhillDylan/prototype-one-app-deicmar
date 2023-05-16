@@ -9,9 +9,8 @@ import SendIcon from '@mui/icons-material/Send';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import { NewPost } from "../../shared/components";
-import './App.css';
 import { alpha } from '@mui/material/styles';
-import BackgroundImage from '../../shared/assets/img/BackgroundImage.png'
+
 
 export const Dashboard = () => {
 
