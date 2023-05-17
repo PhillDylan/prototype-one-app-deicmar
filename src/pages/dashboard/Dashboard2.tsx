@@ -21,6 +21,8 @@ import AddIcon from "@mui/icons-material/Add";
 import { useSelector, useDispatch } from "react-redux";
 import store, { RootState } from "./store";
 import { Link } from "react-router-dom";
+import compressImage from "browser-image-compression";
+
 
 
 export const Dashboard2 = () => {
@@ -55,19 +57,64 @@ export const Dashboard2 = () => {
     getImage();
   }, [buffer]);
 
-  const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const imagem = event.target.files[0];
-      setImagemSelecionada(URL.createObjectURL(imagem));
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const arrayBuffer = reader.result as ArrayBuffer;
-        setBuffer(arrayBuffer);
+  // Resto do código...
+  
+// Resto do código...
+
+const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (event.target.files && event.target.files.length > 0) {
+    const imagem = event.target.files[0];
+    setImagemSelecionada(URL.createObjectURL(imagem));
+
+    const options = {
+      maxSizeMB: 0.3,
+      maxWidthOrHeight: 800,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedImage = await compressImage(imagem, options);
+      const compressedDataUrl = URL.createObjectURL(compressedImage);
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      const img = new Image();
+      img.src = compressedDataUrl;
+
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context?.drawImage(img, 0, 0, img.width, img.height);
+
+        // Convertendo o conteúdo do canvas em um objeto Blob
+        if (canvas.toBlob) {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const reader = new FileReader();
+              reader.onload = () => {
+                const arrayBuffer = reader.result as ArrayBuffer;
+                setBuffer(arrayBuffer);
+
+                // Imprimindo as informações da imagem
+                console.log("Tamanho original:", imagem.size, "bytes");
+                console.log("Tamanho convertido:", blob.size, "bytes");
+                console.log("Largura:", img.width);
+                console.log("Altura:", img.height);
+              };
+              reader.readAsArrayBuffer(blob);
+            }
+          });
+        }
       };
-      reader.readAsArrayBuffer(imagem);
+    } catch (error) {
+      console.log(error);
     }
-  };
+  }
+};
+
+// Resto do código...
+
 
 
   useEffect(() => {

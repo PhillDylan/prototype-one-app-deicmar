@@ -32,29 +32,33 @@ export const Dashboard3 = () => {
   }, [listaItens]);
 
   const enviarDados = () => {
-
+      var formData = new FormData();
+    var n: number = 0
     listaItens.forEach((item: { agora: string; guide: string; tipoLacre: string; numeroAgendamento: string; lacre: string; nomeUsuario: string; cpf: string; imagem: Buffer }) => {
-      let formData = new FormData();
+      n = n + 1
       const file: any = new File([item.imagem], 'imagem.jpg', { type: 'image/jpeg' });
-      const informationsFile = [item.agora, item.guide, item.tipoLacre, item.numeroAgendamento, item.lacre];
+      const informationsFile = [item.agora, item.guide, item.tipoLacre, item.numeroAgendamento, item.lacre,item.nomeUsuario, item.cpf ];
 
       formData.append(informationsFile.toString(), file);
+      if (n === 1){
+        console.log(item.imagem)
+      }
+      
+    });
 
+    const username: any = 'admin';
+    const password: any = 'speed12345'; // substitua isso pela senha descriptografada
+    const token: any = btoa(`${username}:${password}`);
 
-    
-      const username: any = 'admin';
-      const password: any = 'speed12345'; // substitua isso pela senha descriptografada
-      const token: any = btoa(`${username}:${password}`);
-  
-      let options:any = {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Basic ' + token
-        },
-        body: formData
-      };
-  
-      fetch('http://192.168.13.217:1880/cadastrolacre', options)
+    var options:any = {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + token
+      },
+      body: formData
+    };
+
+    fetch('http://192.168.13.214:1882/cadastrolacre', options)
         .then(response => {
           if (response.ok) {
             // Manipule a resposta aqui
@@ -74,7 +78,8 @@ export const Dashboard3 = () => {
         .catch(error => {
           // Trate erros de rede aqui
         });
-    });
+
+
   };
   
   
