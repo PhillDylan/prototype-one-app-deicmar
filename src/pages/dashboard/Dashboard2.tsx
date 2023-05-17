@@ -22,6 +22,9 @@ import { useSelector, useDispatch } from "react-redux";
 import store, { RootState } from "./store";
 import { Link } from "react-router-dom";
 import compressImage from "browser-image-compression";
+import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from '@mui/lab/LoadingButton';
+
 
 
 
@@ -254,13 +257,16 @@ useEffect(() => {
                 }}
                 helperText={<Typography>Digite o Lacre</Typography>}
               />
-              <IconButton
-                color="primary"
-                aria-label="Adicionar"
+              <LoadingButton
+                loading={false}
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+                variant="outlined"
                 onClick={adicionarItem}
               >
-                <AddIcon />
-              </IconButton>
+                SALVAR
+              </LoadingButton>
+
             </Grid>
 
             <Grid item               
@@ -305,8 +311,11 @@ useEffect(() => {
             </List>
             </Grid>
 
-            <Grid item               component={Paper} 
-              elevation={24}>
+            <Grid item 
+              component={Paper} 
+              elevation={24}
+              textAlign='center'
+              >
               <Link to="/checklist">
                 <Button size="large" variant="contained">VOLTAR</Button>
               </Link>
