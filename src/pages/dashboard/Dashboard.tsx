@@ -219,10 +219,15 @@ return(
             textAlign="center"
             justifyContent={{xs: "center",md: 'center'}}
             padding={{xs:theme.spacing(3),md:theme.spacing(12) }}
+            
           >
         <Grid
           item
-
+          component={Paper} 
+          elevation={24}
+          sx={{
+            zIndex: 1
+          }}
         >
           {image ? (
 
@@ -368,6 +373,7 @@ return(
           </Grid>
           <Grid item >
             <Button
+              size="large"
               variant="contained"
               endIcon={<SendIcon />}
               disabled={!nome || !sobrenome || !cpf || statusEnvio === "enviando" || open === true || temErro || !imagemBase64} 

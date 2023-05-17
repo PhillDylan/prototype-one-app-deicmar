@@ -1,4 +1,4 @@
-import { Divider, Grid, useTheme, Button } from "@mui/material";
+import { Divider, Grid, useTheme, Button, Paper } from "@mui/material";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import React, { useState, useEffect, useRef } from "react";
 import { green, pink, red } from '@mui/material/colors';
@@ -150,13 +150,10 @@ export const Dashboard3 = () => {
               justifyContent="center"
               alignItems="center"
               padding={{ xs: theme.spacing(3), md: theme.spacing(8) }}
+              component={Paper} 
+              elevation={24}
               sx={{
-                "& > div": {
-                  backdropFilter: "blur(8px)",
-                  borderRadius: 8,
-                  borderColor: theme.palette.mode === "dark" ? "" : "#E7EBF0",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                },
+                zIndex: 1
               }}
             >
               <Grid item>
@@ -188,7 +185,7 @@ export const Dashboard3 = () => {
                 </Link>
               </Grid>
               <Grid item>
-              <Button variant="contained" onClick={() => {
+              <Button variant="contained" size="large" onClick={() => {
                     enviarDados();
                   }}>ENVIAR</Button>
               </Grid>

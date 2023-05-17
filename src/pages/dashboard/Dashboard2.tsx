@@ -204,6 +204,11 @@ useEffect(() => {
               justifyContent="center"
               alignItems="center"
               padding={{ xs: theme.spacing(3), md: theme.spacing(8) }}
+              component={Paper} 
+              elevation={24}
+              sx={{
+                zIndex: 1
+              }}
             >
               {image ? (
                 <img
@@ -258,7 +263,9 @@ useEffect(() => {
               </IconButton>
             </Grid>
 
-            <Grid item>
+            <Grid item               
+              component={Paper} 
+              elevation={24}>
             <List
               sx={{
                 width: "100%",
@@ -298,9 +305,10 @@ useEffect(() => {
             </List>
             </Grid>
 
-            <Grid item>
+            <Grid item               component={Paper} 
+              elevation={24}>
               <Link to="/checklist">
-                <Button variant="contained">VOLTAR</Button>
+                <Button size="large" variant="contained">VOLTAR</Button>
               </Link>
             </Grid>
           </Grid>
