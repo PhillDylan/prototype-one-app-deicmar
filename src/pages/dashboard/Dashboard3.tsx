@@ -32,17 +32,48 @@ export const Dashboard3 = () => {
   }, [listaItens]);
 
   const enviarDados = () => {
-      var formData = new FormData();
-    var n: number = 0
-    listaItens.forEach((item: { agora: string; guide: string; tipoLacre: string; numeroAgendamento: string; lacre: string; nomeUsuario: string; cpf: string; imagem: Buffer }) => {
-      n = n + 1
-      const file: any = new File([item.imagem], 'imagem.jpg', { type: 'image/jpeg' });
-      const informationsFile = [item.agora, item.guide, item.tipoLacre, item.numeroAgendamento, item.lacre,item.nomeUsuario, item.cpf ];
-
-      formData.append(informationsFile.toString(), file);
-      if (n === 1){
-        console.log(item.imagem)
+    const base64ToBlob:any = (base64String:any, mimeType:any) => {
+      const byteCharacters:any = atob(base64String);
+      const byteArrays:any = [];
+    
+      for (let offset:any = 0; offset < byteCharacters.length; offset += 512) {
+        const slice:any = byteCharacters.slice(offset, offset + 512);
+    
+        const byteNumbers:any = new Array(slice.length);
+        for (let i:any = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+    
+        const byteArray:any = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
       }
+    
+      return new Blob(byteArrays, { type: mimeType });
+    };
+    
+      var formData = new FormData();
+
+    listaItens.forEach((item: { agora: string; guide: string; tipoLacre: string; numeroAgendamento: string; lacre: string; nomeUsuario: string; cpf: string; imagem: Buffer }) => {
+      const base64Image = item.imagem.toString('base64');
+      const blobImage = base64ToBlob(base64Image, 'image/jpeg');
+      const file = new File([blobImage], 'imagem.jpg', { type: 'image/jpeg' });
+    
+      var hora:any = item.agora
+      var guide:any = item.guide
+      var tipolacre:any = item.tipoLacre
+      var agendamento:any =item.numeroAgendamento
+      var numerolacre:any = item.lacre
+      var nomeoperador:any = item.nomeUsuario
+      var idoperador:any = item.cpf
+
+      formData.append('file', file);
+      formData.append('string', hora);
+      formData.append('string', guide);
+      formData.append('string', tipolacre);
+      formData.append('string', agendamento);
+      formData.append('string', numerolacre);
+      formData.append('string', nomeoperador);
+      formData.append('string', idoperador);
       
     });
 
