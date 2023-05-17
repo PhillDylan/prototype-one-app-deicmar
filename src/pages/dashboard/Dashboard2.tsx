@@ -31,7 +31,7 @@ export const Dashboard2 = () => {
   const [buffer, setBuffer] = useState<ArrayBuffer | undefined>();
   const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
   const [listaItens, setListaItens] = useState<{ agora: string; guide: string; tipoLacre: string; numeroAgendamento: string; lacre: string; nomeUsuario: string; cpf: string; imagem: string }[]>(() => {
-    const storedItems = localStorage.getItem("listaItens");
+    const storedItems = sessionStorage.getItem("listaItens"); // Trocar localStorage por sessionStorage
     return storedItems ? JSON.parse(storedItems) : [];
   });
   const imageRef = useRef<HTMLImageElement>(null);
@@ -117,10 +117,11 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
 
 
 
-  useEffect(() => {
-    // Salvar os itens no localStorage sempre que houver uma alteração na listaItens
-    localStorage.setItem("listaItens", JSON.stringify(listaItens));
-  }, [listaItens]);
+useEffect(() => {
+  // Salvar os itens no sessionStorage sempre que houver uma alteração na listaItens
+  sessionStorage.setItem("listaItens", JSON.stringify(listaItens));
+}, [listaItens]);
+
 
 
 

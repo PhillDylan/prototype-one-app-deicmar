@@ -13,7 +13,10 @@ const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 export const Dashboard3 = () => {
   const theme = useTheme();
   const storedListaItens = localStorage.getItem("listaItens");
-  const [listaItens, setListaItens] = useState(storedListaItens ? JSON.parse(storedListaItens) : []);
+  const [listaItens, setListaItens] = useState(() => {
+    const storedListaItens = sessionStorage.getItem("listaItens");
+    return storedListaItens ? JSON.parse(storedListaItens) : [];
+  });
   const [greenChecked, setGreenChecked] = useState(false);
   const [redChecked, setRedChecked] = useState(true);
 
@@ -28,7 +31,7 @@ export const Dashboard3 = () => {
   }, [listaItens]);
 
   useEffect(() => {
-    localStorage.setItem("listaItens", JSON.stringify(listaItens));
+    sessionStorage.setItem("listaItens", JSON.stringify(listaItens));
   }, [listaItens]);
 
   const enviarDados = () => {
@@ -74,6 +77,7 @@ export const Dashboard3 = () => {
       formData.append('string', numerolacre);
       formData.append('string', nomeoperador);
       formData.append('string', idoperador);
+      console.log(item.agora)
       
     });
 
