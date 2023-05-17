@@ -222,13 +222,16 @@ useEffect(() => {
               ) : (
                 <>
                   <label htmlFor="file">
-                    <IconButton
-                      color="primary"
+                    <LoadingButton
+                      loading={false}
+                      loadingPosition="start"
+                      startIcon={<PhotoCamera />}
+                      variant="outlined"
                       aria-label="upload picture"
                       component="span"
                     >
-                      <PhotoCamera />
-                    </IconButton>
+                      ADICIONAR IMAGEM
+                    </LoadingButton>
                     <input
                       onChange={handleImagemSelecionada}
                       id="file"
@@ -236,7 +239,7 @@ useEffect(() => {
                       type="file"
                     />
                   </label>
-                  <Typography>Nenhuma imagem selecionada.</Typography>
+
                 </>
               )}
 

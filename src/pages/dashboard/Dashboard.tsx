@@ -10,6 +10,8 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import { NewPost } from "../../shared/components";
 import { alpha } from '@mui/material/styles';
+import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 
 export const Dashboard = () => {
@@ -236,27 +238,37 @@ return(
           ) : (
                   <>
                       <label htmlFor="file">
-                        <IconButton color="primary" aria-label="upload picture" component="span">
-                          <PhotoCamera />
-                        </IconButton>
+                      <LoadingButton
+                      loading={false}
+                      loadingPosition="start"
+                      startIcon={<PhotoCamera />}
+                      variant="outlined"
+                      aria-label="upload picture"
+                      component="span"
+                    >
+                      ADICIONAR IMAGEM
+                    </LoadingButton>
                       </label>
                       <input onChange={handleImagemSelecionada} id="file" style={{ display: 'none' }} type="file" />
-                  <Typography>Nenhuma imagem selecionada.</Typography>
                   </> 
           )}
 
           {image && (
-            <Grid container textAlign='center' alignItems='center' alignContent='center'>
+            <Grid item>
             <Grid item >
                   <label htmlFor="file">
-                    <IconButton color="primary" aria-label="upload picture" component="span" >
-                      <PhotoCamera />
-                    </IconButton>
+                  <LoadingButton
+                      loading={false}
+                      loadingPosition="start"
+                      startIcon={<PhotoCamera />}
+                      variant="outlined"
+                      aria-label="upload picture"
+                      component="span"
+                    >
+                      TROCAR IMAGEM
+                    </LoadingButton>
                     </label>
                   <input onChange={handleImagemSelecionada} id="file" style={{ display: 'none' }} type="file" />
-                  </Grid>
-                  <Grid item>
-                    <Typography>Trocar imagem</Typography>
                   </Grid>
             </Grid>
           )}
