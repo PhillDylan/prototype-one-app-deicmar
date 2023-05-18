@@ -160,28 +160,8 @@ export const Dashboard3 = () => {
                 </Link>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          padding={{ xs: theme.spacing(5), md: theme.spacing(20) }}
-          sx={{
-            "& > div": {
-              backdropFilter: "blur(8px)",
-              borderRadius: 8,
-              borderColor: theme.palette.mode === "dark" ? "" : "#E7EBF0",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-          }}
-        >
-          <Grid
-            container
-            direction="column"
-            padding={{ xs: theme.spacing(5), md: theme.spacing(20) }}
-          >
+
+
             <Grid
               container
               justifyContent="center"
@@ -220,16 +200,8 @@ export const Dashboard3 = () => {
                   <Button variant="contained" disabled={mensagemFetch === true}>ADD</Button>
                 </Link>
               </Grid>
-            </Grid>
-          </Grid>
         </Grid>
-        <Grid
-          container
-          justifyContent="center"
-          alignItems="center"
-          padding={{ xs: theme.spacing(5), md: theme.spacing(20) }}
-        >
-          <Grid
+         <Grid
             container
             justifyContent="center"
             alignItems="center"
@@ -240,12 +212,20 @@ export const Dashboard3 = () => {
             }}
           >
             <Grid item>
-              <Button variant="contained" size="large" onClick={enviarDados}>
+            <Button
+            variant="contained"
+            size="large"
+            onClick={enviarDados}
+            disabled={!greenChecked || !mensagemFetch} // Desabilita o botão se os checkboxes não estiverem marcados como verde
+            >
                 ENVIAR
               </Button>
             </Grid>
           </Grid>
         </Grid>
+        </Grid>
+
+
       </LayoutBaseDePagina>
     </>
   );
