@@ -40,6 +40,13 @@ export const Dashboard2 = () => {
   const imageRef = useRef<HTMLImageElement>(null);
   const dispatch = useDispatch();
 
+
+  useEffect(() => {
+    // Salvar os itens no sessionStorage sempre que houver uma alteração na listaItens
+    sessionStorage.setItem("listaItens", JSON.stringify(listaItens));
+  }, [listaItens]);
+  
+
   useEffect(() => {
     const getImage = () => {
       if (buffer != null) {
@@ -72,28 +79,33 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
 
     const options = {
       maxSizeMB: 0.3,
-      maxWidthOrHeight: 800,
       useWebWorker: true,
     };
 
     try {
-      const compressedImage = await compressImage(imagem, options);
-      const compressedDataUrl = URL.createObjectURL(compressedImage);
-
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
       const img = new Image();
-      img.src = compressedDataUrl;
+      img.src = URL.createObjectURL(imagem);
 
       img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        context?.drawImage(img, 0, 0, img.width, img.height);
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+
+        const targetWidth = 1600;
+        const targetHeight = 800;
+
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        context?.drawImage(img, 0, 0, targetWidth, targetHeight);
 
         // Convertendo o conteúdo do canvas em um objeto Blob
         if (canvas.toBlob) {
-          canvas.toBlob((blob) => {
+          canvas.toBlob(async (blob) => {
             if (blob) {
+              const file = new File([blob], imagem.name, { type: imagem.type, lastModified: imagem.lastModified });
+
+              const compressedImage = await compressImage(file, options);
+              const compressedDataUrl = URL.createObjectURL(compressedImage);
+
               const reader = new FileReader();
               reader.onload = () => {
                 const arrayBuffer = reader.result as ArrayBuffer;
@@ -101,11 +113,13 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
 
                 // Imprimindo as informações da imagem
                 console.log("Tamanho original:", imagem.size, "bytes");
-                console.log("Tamanho convertido:", blob.size, "bytes");
-                console.log("Largura:", img.width);
-                console.log("Altura:", img.height);
+                console.log("Tamanho convertido:", compressedImage.size, "bytes");
+                console.log("Largura original:", img.width);
+                console.log("Altura original:", img.height);
+                console.log("Largura redimensionada:", targetWidth);
+                console.log("Altura redimensionada:", targetHeight);
               };
-              reader.readAsArrayBuffer(blob);
+              reader.readAsArrayBuffer(compressedImage);
             }
           });
         }
@@ -116,18 +130,8 @@ const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement
   }
 };
 
+
 // Resto do código...
-
-
-
-useEffect(() => {
-  // Salvar os itens no sessionStorage sempre que houver uma alteração na listaItens
-  sessionStorage.setItem("listaItens", JSON.stringify(listaItens));
-}, [listaItens]);
-
-
-
-
   const adicionarItem = () => {
     
     console.log(buffer)
@@ -213,12 +217,13 @@ useEffect(() => {
                 zIndex: 1
               }}
             >
+              <Grid item>
               {image ? (
                 <img
                   src={image.url}
                   alt="Selected Image"
-                  style={{ width: 800, height: 400 }}
-                />
+                  style={{ maxWidth: "100%", height: "auto" }}
+                  />
               ) : (
                 <>
                   <label htmlFor="file">
@@ -242,6 +247,7 @@ useEffect(() => {
 
                 </>
               )}
+              </Grid>
 
               <TextField
                 fullWidth
