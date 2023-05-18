@@ -112,7 +112,7 @@ export const Dashboard2 = () => {
 
   const adicionarItem = () => {
     // Restante do código...
-    const novoItem = { lacre };
+    const novoItem = { lacre,image };
     dispatch({ type: "SET_LISTA_ITENS", payload: [...listaItens, novoItem] }); // Atualizar o estado do Redux com o novo item
   };
 

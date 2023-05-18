@@ -12,6 +12,7 @@ import { NewPost } from "../../shared/components";
 import { alpha } from '@mui/material/styles';
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { useDispatch } from "react-redux";
 
 
 export const Dashboard = () => {
@@ -32,6 +33,16 @@ const [image, setImage] = useState<{url: string, width: number, height: number} 
 const [imagemBase64, setImagemBase64] = useState<string | undefined>();
 const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
 const [upImage, setResultImage] = useState<{url: string, width: number, height: number} | undefined>();
+const dispatch = useDispatch();
+
+
+const handleFetchResult = (sucesso: boolean, mensagem: string) => {
+  setMensagemEnvio(mensagem);
+  setSeverity(sucesso ? 'success' : 'error');
+  setErroEnvio(sucesso ? undefined : mensagem);
+  setStatusEnvio(sucesso ? 'certo' : 'errado');
+  dispatch({ type: 'SET_MENSAGEM_FETCH', payload: sucesso });
+};
 
 
 const ValidadorCPF = (cpf: any) => {
@@ -102,7 +113,7 @@ useEffect(() => {
   const username = 'admin';
   const password = 'speed12345'; // replace this with the decrypted password
   const token = btoa(`${username}:${password}`);
-  fetch('http://192.168.13.224:1880/api/groupsid', {
+  fetch('http://192.168.13.217:1880/api/groupsid', {
     method: 'GET',
     headers: {
       'Authorization': 'Basic ' + token
@@ -396,7 +407,7 @@ return(
                   const token = btoa(`${username}:${password}`);
                   const cpfSemCaracteres = removeCaracteresCPF(cpf);
 
-                  fetch('http://192.168.13.224:1880/api/cadastro', {
+                  fetch('http://192.168.13.217:1880/api/cadastro', {
                       method: 'POST',
                       headers: {
                         'Authorization': 'Basic ' + token
@@ -425,12 +436,14 @@ return(
                         setOpen(true);
                         setMensagemEnvio(data.message);
                         setErroEnvio(undefined);
+                        handleFetchResult(true, 'Mensagem de sucesso');
                       }else{
                         setSeverity('error');
                         setOpen(true);
                         setMensagemEnvio(data.message);
                         setStatusEnvio("erro");
                         setErroEnvio(undefined);
+                        handleFetchResult(false, 'Mensagem de erro');
                       }
                     })
                   .catch(error => {
