@@ -48,7 +48,7 @@ export const Dashboard3 = () => {
     };
 
       var formData = new FormData();
-      console.log('lista itens', listaItens);
+
     listaItens.forEach((item: { lacre: string; imagem: Buffer }) => {
       const buffer = item.imagem;
       const blobImage = base64ToBlob(buffer, 'image/jpeg');
@@ -69,7 +69,7 @@ export const Dashboard3 = () => {
       formData.append('string', numerolacre);
       formData.append('string', nomeoperador);
       formData.append('string', idoperador);
-      console.log(file)
+
       
     });
 
@@ -105,14 +105,6 @@ export const Dashboard3 = () => {
         .catch(error => {
           // Trate erros de rede aqui
         });
-
-
-
-
-
-
-    // ...
-    console.log('lista itens', listaItens);
   };
 
   return (
