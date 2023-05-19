@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-export const Dashboard3 = () => {
+export const Dashboard5 = () => {
   const theme = useTheme();
   const listaItens = useSelector((state: RootState) => state.listaItens); // Obter o estado da store Redux
   const [greenChecked, setGreenChecked] = useState(false);
@@ -28,31 +28,13 @@ export const Dashboard3 = () => {
 
   const enviarDados = () => {
     // Restante do código do envio dos dados
-    const base64ToBlob:any = (base64String:any, mimeType:any) => {
-      const byteCharacters:any = atob(base64String);
-      const byteArrays:any = [];
-    
-      for (let offset:any = 0; offset < byteCharacters.length; offset += 512) {
-        const slice:any = byteCharacters.slice(offset, offset + 512);
-    
-        const byteNumbers:any = new Array(slice.length);
-        for (let i:any = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-    
-        const byteArray:any = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
-      }
-    
-      return new Blob(byteArrays, { type: mimeType });
-    };
 
       var formData = new FormData();
       console.log('lista itens', listaItens);
     listaItens.forEach((item: { lacre: string; imagem: Buffer }) => {
-      const buffer = item.imagem;
-      const blobImage = base64ToBlob(buffer, 'image/jpeg');
-      const file = new File([blobImage], 'imagem.jpg', { type: 'image/jpeg' });
+
+
+      const file = new File([item.imagem], 'imagem.jpg', { type: 'image/jpeg' });
       var hora:any = 'item.agora'
       var guide:any = 'item.guide'
       var tipolacre:any = 'item.tipoLacre'

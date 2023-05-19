@@ -126,7 +126,7 @@ import React, { useState, useEffect } from "react";
 import { useAppThemeContext, useAppDrawerContext } from "../shared/contexts";
 import MenuIcon from "@mui/icons-material/Menu";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import { Dashboard, Dashboard2, Dashboard3 } from "../pages";
+import { Dashboard, Dashboard2, Dashboard3,Dashboard4,Dashboard5 } from "../pages";
 
 export const AppRoutes = () => {
   const { toggleTheme } = useAppThemeContext();
@@ -148,7 +148,15 @@ export const AppRoutes = () => {
         icon: "fact_check",
         path: "/checklist",
         label: "Checklist",
-      },
+      },{
+      icon: "fact_check",
+      path: "/agendamento2",
+      label: "agendamento2",
+    },{
+      icon: "fact_check",
+      path: "/agendamento",
+      label: "agendamento",
+    },
     ]);
   }, []);
 
@@ -159,6 +167,8 @@ export const AppRoutes = () => {
       <Route path="/cadastro-facial" element={<Dashboard />} />
       <Route path="/cadastro-lacre" element={<Dashboard2 />} />
       <Route path="/checklist" element={<Dashboard3 />} />
+      <Route path="/agendamento" element={<Dashboard4 />} />
+      <Route path="/agendamento2" element={<Dashboard5 />} />
 
       <Route path="*" element={<Navigate to="/cadastro-facial" />} />
     </Routes>

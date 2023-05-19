@@ -28,31 +28,25 @@ import LoadingButton from '@mui/lab/LoadingButton';
 export const Dashboard2 = () => {
   const [lacre, setLacre] = useState("");
   const [image, setImage] = useState<{ url: string; width: number; height: number } | undefined>();
-  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>();
   const [imagemSelecionada, setImagemSelecionada] = useState<string | undefined>();
+  const [imagemSelecionadaBase64, setImagemSelecionadaBase64] = useState<string | undefined>();
   const listaItens = useSelector((state: RootState) => state.listaItens); // Obter o estado da lista de itens do Redux
   const imageRef = useRef<HTMLImageElement>(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getImage = () => {
-      if (buffer != null) {
-        const blob = new Blob([buffer]);
-        const url = URL.createObjectURL(blob);
-        const img = new Image();
-        img.src = url;
-        img.onload = () => {
-          setImage({
-            url: img.src,
-            width: img.naturalWidth,
-            height: img.naturalHeight,
-          });
-        };
+      if (imagemSelecionada) {
+        setImage({
+          url: imagemSelecionada,
+          width: imageRef.current?.naturalWidth || 0,
+          height: imageRef.current?.naturalHeight || 0,
+        });
       }
     };
 
     getImage();
-  }, [buffer]);
+  }, [imagemSelecionada]);
 
   const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -89,9 +83,9 @@ export const Dashboard2 = () => {
 
                 const reader = new FileReader();
                 reader.onload = () => {
-                  const arrayBuffer = reader.result as ArrayBuffer;
-                  setBuffer(arrayBuffer);
-
+                  const base64String = reader.result as string;
+                  setImagemSelecionada(base64String);
+                  setImagemSelecionadaBase64(  base64String.substring(base64String.lastIndexOf(',') + 1));
                   console.log("Tamanho original:", imagem.size, "bytes");
                   console.log("Tamanho convertido:", compressedImage.size, "bytes");
                   console.log("Largura original:", img.width);
@@ -99,7 +93,7 @@ export const Dashboard2 = () => {
                   console.log("Largura redimensionada:", targetWidth);
                   console.log("Altura redimensionada:", targetHeight);
                 };
-                reader.readAsArrayBuffer(compressedImage);
+                reader.readAsDataURL(compressedImage);
               }
             });
           }
@@ -112,7 +106,7 @@ export const Dashboard2 = () => {
 
   const adicionarItem = () => {
     // Restante do código...
-    const novoItem = { lacre,image };
+    const novoItem = { lacre, imagem: imagemSelecionadaBase64 };
     dispatch({ type: "SET_LISTA_ITENS", payload: [...listaItens, novoItem] }); // Atualizar o estado do Redux com o novo item
   };
 
@@ -123,7 +117,7 @@ export const Dashboard2 = () => {
   };
 
   const theme = useTheme();
-
+  
   return (
     <>
     <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>

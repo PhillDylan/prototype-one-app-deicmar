@@ -2,7 +2,7 @@ import { createStore } from 'redux';
 
 // Defina o estado inicial
 interface AppState {
-  listaItens: { lacre: string; imagem: File }[];
+  listaItens: { lacre: string; imagem: Buffer }[];
   mensagemFetch: boolean | null;
 }
 
@@ -17,7 +17,7 @@ const SET_LISTA_ITENS = 'SET_LISTA_ITENS';
 
 interface SetListaItensAction {
   type: typeof SET_LISTA_ITENS;
-  payload: { lacre: string; imagem: File }[];
+  payload: { lacre: string; imagem: Buffer }[];
 }
 
 const SET_MENSAGEM_FETCH = 'SET_MENSAGEM_FETCH';
