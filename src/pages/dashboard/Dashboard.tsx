@@ -436,14 +436,14 @@ return(
                         setOpen(true);
                         setMensagemEnvio(data.message);
                         setErroEnvio(undefined);
-                        handleFetchResult(true, 'Mensagem de sucesso');
+                        handleFetchResult(true, data.message);
                       }else{
                         setSeverity('error');
                         setOpen(true);
                         setMensagemEnvio(data.message);
                         setStatusEnvio("erro");
                         setErroEnvio(undefined);
-                        handleFetchResult(false, 'Mensagem de erro');
+                        handleFetchResult(false, data.message);
                       }
                     })
                   .catch(error => {

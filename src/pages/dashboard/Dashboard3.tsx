@@ -226,7 +226,7 @@ export const Dashboard3 = () => {
             variant="contained"
             size="large"
             onClick={enviarDados}
-            disabled={false}/*!greenChecked || !mensagemFetch*/ // Desabilita o botão se os checkboxes não estiverem marcados como verde
+            disabled={!greenChecked || !mensagemFetch}/*!greenChecked || !mensagemFetch*/ // Desabilita o botão se os checkboxes não estiverem marcados como verde
             >
                 ENVIAR
               </Button>

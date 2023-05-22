@@ -151,10 +151,6 @@ export const AppRoutes = () => {
       },{
       icon: "fact_check",
       path: "/agendamento2",
-      label: "agendamento2",
-    },{
-      icon: "fact_check",
-      path: "/agendamento",
       label: "agendamento",
     },
     ]);
