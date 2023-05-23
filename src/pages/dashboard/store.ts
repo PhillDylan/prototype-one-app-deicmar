@@ -4,11 +4,14 @@ import { createStore } from 'redux';
 interface AppState {
   listaItens: { lacre: string; imagem: Buffer }[];
   mensagemFetch: boolean | null;
+  dadosFetch: any; // Substitua "any" pelo tipo correto dos dados retornados
 }
+
 
 const initialState: AppState = {
   listaItens: [],
-  mensagemFetch: null,
+  mensagemFetch: false,
+  dadosFetch: null, // Adicione essa linha com um valor inicial apropriado
 };
 
 
@@ -27,17 +30,32 @@ interface SetMensagemFetchAction {
   payload: boolean;
 }
 
-type AppActionTypes = SetListaItensAction | SetMensagemFetchAction;
+
+const SET_DADOS_FETCH = 'SET_DADOS_FETCH';
+
+interface SetDadosFetchAction {
+  type: typeof SET_DADOS_FETCH;
+  payload: any; // Substitua "any" pelo tipo correto dos dados retornados
+}
+
+// Dentro do bloco de definição de AppActionTypes
+type AppActionTypes = SetListaItensAction | SetMensagemFetchAction | SetDadosFetchAction;
 
 
 // Defina o reducer
-const reducer = (state = initialState, action: AppActionTypes): AppState => {
+const reducer = (state: AppState = initialState, action: AppActionTypes): AppState => {
   switch (action.type) {
     case SET_LISTA_ITENS:
       return {
         ...state,
         listaItens: action.payload,
       };
+      // Dentro do bloco do switch do reducer
+      case SET_DADOS_FETCH:
+        return {
+          ...state,
+          dadosFetch: action.payload,
+        };
     case SET_MENSAGEM_FETCH:
       return {
         ...state,

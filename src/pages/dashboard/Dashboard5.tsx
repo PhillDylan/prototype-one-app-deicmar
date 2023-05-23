@@ -12,12 +12,13 @@ import {
   IconButton,
   AlertColor,
   styled,
+  Box,
 } from "@mui/material";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import React, { useEffect, useState } from "react";
 import { green, red } from "@mui/material/colors";
 import Checkbox from "@mui/material/Checkbox";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store";
 import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
@@ -36,6 +37,23 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  background: theme.palette.mode === "dark"
+    ? "linear-gradient(to bottom, #0A1EA2, #070830)"
+    : "linear-gradient(to bottom, #E0DFDF, #908A8A)",
+}));
+// ...
+
+const TransparentCard = styled(Card)(({ theme }) => ({
+  background: "transparent",
+  boxShadow: "none",
+  "& .MuiPaper-root": {
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    backdropFilter: "blur(10px)",
+  },
+}));
+
 
 export const Dashboard5 = () => {
   const [open, setOpen] = React.useState(false);
@@ -58,11 +76,12 @@ export const Dashboard5 = () => {
     { url: string; width: number; height: number } | undefined
   >();
 
-  const handleFetchResult = (sucesso: boolean, mensagem: string) => {
-    setMensagemEnvio(mensagem);
-    setSeverity(sucesso ? "success" : "error");
-    setErroEnvio(sucesso ? undefined : mensagem);
-    setStatusEnvio(sucesso ? "certo" : "errado");
+
+
+  const dispatch = useDispatch();
+  
+  const handleFetchResult = (mensagem: any) => {
+    dispatch({ type: "SET_DADOS_FETCH", payload: mensagem });
   };
 
   const [lacre, setLacre] = useState("");
@@ -73,10 +92,10 @@ export const Dashboard5 = () => {
         titulo="BUSCAR AGENDAMENTO"
         barraDeFerramentas={<></>}
       >
-
-        <Card variant="outlined">
+<Box height="100vh" >
+<StyledCard variant="outlined" sx={{ height: '100%' }}>
           <Stack spacing={5}>
-            <CardContent>
+          <TransparentCard>
               <Item>
                 <TextField
                   fullWidth
@@ -137,26 +156,23 @@ export const Dashboard5 = () => {
                       .then((response) => response.json())
                       .then((data) => {
                         console.log(data);
-                        if (data.statuscontainer === "success") {
-                          setStatusEnvio("pronto");
-                          setNome("");
+                        console.log(data.status);
+                        if (data.status === "sucess") {
+                          setSeverity("success");
                           setLacre("");
-                          setSobrenome("");
-                          setCpf("");
                           setImagemBase64(undefined);
                           setImagemSelecionada(undefined);
                           setOpen(true);
                           setMensagemEnvio(data.message);
                           setErroEnvio(undefined);
-                          handleFetchResult(true, data.message);
+                          handleFetchResult(data);
                         } else {
-                          setLacre("");
                           setSeverity("error");
                           setOpen(true);
                           setMensagemEnvio(data.message);
                           setStatusEnvio("erro");
                           setErroEnvio(undefined);
-                          handleFetchResult(false, data.message);
+                          handleFetchResult(null);
                         }
                       })
                       .catch((error) => {
@@ -178,9 +194,13 @@ export const Dashboard5 = () => {
                 </Button>
                 </Item>
 
-            </CardContent>
+                </TransparentCard>
           </Stack>
-        </Card>
+   
+  {/* Conteúdo do card */}
+</StyledCard>
+
+        </Box>
       </LayoutBaseDePagina>
     </>
   );

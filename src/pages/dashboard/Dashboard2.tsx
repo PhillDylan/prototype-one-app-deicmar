@@ -134,8 +134,8 @@ export const Dashboard2 = () => {
     <>
       <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>
         <Divider />
-
-        <Card variant="outlined">
+        <Box height="100vh" >
+        <Card variant="outlined" sx={{ height: '100%', }}>
           <Stack spacing={5}>
             <CardContent>
               <Item>
@@ -153,7 +153,7 @@ export const Dashboard2 = () => {
                           loading={false}
                           loadingPosition="start"
                           startIcon={<PhotoCamera />}
-                          variant="outlined"
+                          variant="contained"
                           aria-label="upload picture"
                           component="span"
                         >
@@ -188,7 +188,7 @@ export const Dashboard2 = () => {
                   loading={false}
                   loadingPosition="start"
                   startIcon={<SaveIcon />}
-                  variant="outlined"
+                  variant="contained"
                   onClick={adicionarItem}
                 >
                   SALVAR
@@ -265,6 +265,7 @@ export const Dashboard2 = () => {
             </CardContent>
           </Stack>
         </Card>
+        </Box>
       </LayoutBaseDePagina>
     </>
   );

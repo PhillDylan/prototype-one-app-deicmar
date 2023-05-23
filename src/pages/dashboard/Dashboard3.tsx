@@ -1,4 +1,4 @@
-import { Divider, Grid, useTheme, Button, Paper, styled } from "@mui/material";
+import { Divider, Grid, useTheme, Button, Paper, styled, Box } from "@mui/material";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import React, { useEffect, useState } from "react";
 import { green, red } from "@mui/material/colors";
@@ -16,7 +16,7 @@ import Stack from "@mui/material/Stack";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#ffffff",
   ...theme.typography.body2,
   padding: theme.spacing(2),
   textAlign: "center",
@@ -29,16 +29,18 @@ export const Dashboard3 = () => {
   const [greenChecked, setGreenChecked] = useState(false);
   const [redChecked, setRedChecked] = useState(true);
   const mensagemFetch = useSelector((state: RootState) => state.mensagemFetch);
+  const dadosFetch = useSelector((state: RootState) => state.dadosFetch);
+
 
   useEffect(() => {
-    if (listaItens.length > 0) {
+    if (listaItens.length > 0 || dadosFetch?.data.obj.container === false) {
       setGreenChecked(true);
       setRedChecked(false);
     } else {
       setGreenChecked(false);
       setRedChecked(true);
     }
-  }, [listaItens]);
+  }, [listaItens, dadosFetch]);
 
   const enviarDados = () => {
     // Restante do código do envio dos dados
@@ -111,44 +113,50 @@ export const Dashboard3 = () => {
 
   return (
     <>
-      <LayoutBaseDePagina titulo="CHECKLIST" barraDeFerramentas={<></>}>
+      <LayoutBaseDePagina titulo={`CHECKLIST`} barraDeFerramentas={<></>}>
         <Divider />
-        <Card variant="outlined">
+        <Box height="100vh" >
+        <Card variant="outlined" sx={{ height: '100%', }}>
+
           <Stack spacing={5}>
             <CardContent>
-
               <Item>
-              <Grid item>
-                <Checkbox
-                  {...label}
-                  checked={greenChecked}
-                  disabled={greenChecked}
-                  sx={{
-                    color: green[800],
-                    "&.Mui-checked": { color: green[600] },
-                  }}
-                />
-                <Checkbox
-                  {...label}
-                  checked={redChecked}
-                  disabled={redChecked}
-                  sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
-                />
-                <span>LACRE</span>
-                <Link to="/cadastro-lacre">
-                  <Button variant="contained">ADD</Button>
-                </Link>
-              </Grid>
-
+              {dadosFetch !== null ? (
+                  dadosFetch.data.obj.container === true ? (
+                    <Grid item sx={{ display: { xs: 'block', md: 'block' } }}>
+                      {/* Conteúdo do Grid */}
+                      <Checkbox
+                        {...label}
+                        checked={greenChecked}
+                        disabled={greenChecked}
+                        sx={{
+                          color: green[800],
+                          "&.Mui-checked": { color: green[600] },
+                        }}
+                      />
+                      <Checkbox
+                        {...label}
+                        checked={redChecked}
+                        disabled={redChecked}
+                        sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
+                      />
+                      <span>LACRE</span>
+                      <Link to="/cadastro-lacre">
+                        <Button variant="contained">ADD</Button>
+                      </Link>
+                    </Grid>
+                  ) : null
+                ) : null}
             </Item>
+
 
 
             <Item>
               <Grid item>
                 <Checkbox
                   {...label}
-                  checked={mensagemFetch === true}
-                  disabled={mensagemFetch === true}
+                  checked={mensagemFetch === true || dadosFetch?.data.face === true}
+                  disabled={mensagemFetch === true || dadosFetch?.data.face === true}
                   sx={{
                     color: green[800],
                     "&.Mui-checked": { color: green[600] },
@@ -156,13 +164,13 @@ export const Dashboard3 = () => {
                 />
                 <Checkbox
                   {...label}
-                  checked={mensagemFetch === false}
-                  disabled={mensagemFetch === false}
+                  checked={mensagemFetch === false && dadosFetch?.data.face === false}
+                  disabled={mensagemFetch === false || dadosFetch?.data.face === false}
                   sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
                 />
                 <span>Cadastro Facial</span>
                 <Link to="/cadastro-facial">
-                  <Button variant="contained" disabled={mensagemFetch === true}>
+                  <Button variant="contained" disabled={mensagemFetch === true || dadosFetch?.data.face === true}>
                     ADD
                   </Button>
                 </Link>
@@ -178,7 +186,21 @@ export const Dashboard3 = () => {
                   variant="contained"
                   size="large"
                   onClick={enviarDados}
-                  disabled={!greenChecked || !mensagemFetch}
+                  disabled={!greenChecked || (!mensagemFetch && dadosFetch?.data.face === false)}
+                >
+                  ENVIAR
+                </Button>
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={() => {
+                    console.log('enviarDados', dadosFetch);
+                    console.log('id_agendamento', dadosFetch.data.agendamento.id_agendamento);
+                    console.log('tipo_serviço', dadosFetch.data.agendamento.tipo_serviço);
+                    console.log('face', dadosFetch.data.face);
+                    console.log('container', dadosFetch.data.obj.container);
+                  }}
+
                 >
                   ENVIAR
                 </Button>
@@ -189,6 +211,7 @@ export const Dashboard3 = () => {
         </CardContent>
         </Stack>
         </Card>
+        </Box>
       </LayoutBaseDePagina>
     </>
   );

@@ -76,7 +76,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
         </Typography>
       </Box>
       {barraDeFerramentas && <Box>{barraDeFerramentas}</Box>}
-      <Box flex={1} overflow="auto">
+      <Box flex={1} overflow="auto" >
         {" "}
         {/* Creating a scrollable container */}
         {children} {/* Rendering the child components */}

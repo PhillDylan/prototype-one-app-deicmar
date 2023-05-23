@@ -232,7 +232,9 @@ export const Dashboard = () => {
     <>
       <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
         <Divider />
-        <Card variant="outlined">
+        <Box height="100vh" >
+        <Card variant="outlined" sx={{ height: '100%', }}>
+
           <Stack spacing={5}>
             <CardContent>
             <Item>
@@ -247,7 +249,7 @@ export const Dashboard = () => {
                       loading={false}
                       loadingPosition="start"
                       startIcon={<PhotoCamera />}
-                      variant="outlined"
+                      variant="contained"
                       aria-label="upload picture"
                       component="span"
                     >
@@ -481,6 +483,7 @@ export const Dashboard = () => {
           </CardContent>
           </Stack>
           </Card>
+          </Box>
       </LayoutBaseDePagina>
     </>
   );
