@@ -31,30 +31,12 @@ import Stack from "@mui/material/Stack";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f2f2f2",
   ...theme.typography.body2,
   padding: theme.spacing(2),
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  background: theme.palette.mode === "dark"
-    ? "linear-gradient(to bottom, #0A1EA2, #070830)"
-    : "linear-gradient(to bottom, #E0DFDF, #908A8A)",
-}));
-// ...
-
-const TransparentCard = styled(Card)(({ theme }) => ({
-  background: "transparent",
-  boxShadow: "none",
-  "& .MuiPaper-root": {
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    backdropFilter: "blur(5px)",
-  },
-  padding: theme.spacing(2)
-}));
-
 
 export const Dashboard5 = () => {
   const [open, setOpen] = React.useState(false);
@@ -94,9 +76,9 @@ export const Dashboard5 = () => {
         barraDeFerramentas={<></>}
       >
 <Box height="100vh" >
-<StyledCard variant="outlined" sx={{ height: '100%' }}>
+        <Card  sx={{ height: '100%', }}>
           <Stack spacing={5}>
-          <TransparentCard>
+            <CardContent >
               <Item>
                 <TextField
                   fullWidth
@@ -195,12 +177,9 @@ export const Dashboard5 = () => {
                 </Button>
                 </Item>
 
-                </TransparentCard>
+            </CardContent>
           </Stack>
-   
-  {/* Conteúdo do card */}
-</StyledCard>
-
+        </Card>
         </Box>
       </LayoutBaseDePagina>
     </>
