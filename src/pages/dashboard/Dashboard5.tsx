@@ -49,9 +49,10 @@ const TransparentCard = styled(Card)(({ theme }) => ({
   background: "transparent",
   boxShadow: "none",
   "& .MuiPaper-root": {
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
-    backdropFilter: "blur(10px)",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backdropFilter: "blur(5px)",
   },
+  padding: theme.spacing(2)
 }));
 
 
