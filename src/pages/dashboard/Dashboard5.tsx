@@ -27,7 +27,6 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 
-
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -59,10 +58,8 @@ export const Dashboard5 = () => {
     { url: string; width: number; height: number } | undefined
   >();
 
-
-
   const dispatch = useDispatch();
-  
+
   const handleFetchResult = (mensagem: any) => {
     dispatch({ type: "SET_DADOS_FETCH", payload: mensagem });
   };
@@ -75,111 +72,111 @@ export const Dashboard5 = () => {
         titulo="BUSCAR AGENDAMENTO"
         barraDeFerramentas={<></>}
       >
-<Box height="100vh" >
-        <Card  sx={{ height: '100%', }}>
-          <Stack spacing={5}>
-            <CardContent >
-              <Item>
-                <TextField
-                  fullWidth
-                  placeholder="AAA1A11"
-                  error={lacre.length < 3}
-                  required
-                  id="outlined-required"
-                  label={<Typography>Required</Typography>}
-                  value={lacre}
-                  InputLabelProps={{ shrink: true }}
-                  margin={"normal"}
-                  onChange={(event) => {
-                    setLacre(event.target.value);
-                  }}
-                  helperText={<Typography>Digite a placa</Typography>}
-                />
+        <Box height="100vh">
+          <Card sx={{ height: "150%" }}>
+            <Stack spacing={5}>
+              <CardContent>
+                <Item>
+                  <TextField
+                    fullWidth
+                    placeholder="AAA1A11"
+                    error={lacre.length < 3}
+                    required
+                    id="outlined-required"
+                    label={<Typography>Required</Typography>}
+                    value={lacre}
+                    InputLabelProps={{ shrink: true }}
+                    margin={"normal"}
+                    onChange={(event) => {
+                      setLacre(event.target.value);
+                    }}
+                    helperText={<Typography>Digite a placa</Typography>}
+                  />
                 </Item>
                 <Item>
-                <Grid item>
-                  <Collapse in={open}>
-                    <Alert
-                      variant="filled"
-                      severity={severity}
-                      action={
-                        <IconButton
-                          aria-label="close"
-                          color="inherit"
-                          size="small"
-                          onClick={() => {
-                            setOpen(false);
-                          }}
-                        >
-                          {" "}
-                          <CloseIcon fontSize="inherit" />{" "}
-                        </IconButton>
-                      }
-                      sx={{ mb: 2 }}
-                    >
-                      <AlertTitle>{severity}</AlertTitle>
-                      {erroEnvio || mensagemEnvio}
-                    </Alert>
-                  </Collapse>
-                </Grid>
+                  <Grid item>
+                    <Collapse in={open}>
+                      <Alert
+                        variant="filled"
+                        severity={severity}
+                        action={
+                          <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                              setOpen(false);
+                            }}
+                          >
+                            {" "}
+                            <CloseIcon fontSize="inherit" />{" "}
+                          </IconButton>
+                        }
+                        sx={{ mb: 2 }}
+                      >
+                        <AlertTitle>{severity}</AlertTitle>
+                        {erroEnvio || mensagemEnvio}
+                      </Alert>
+                    </Collapse>
+                  </Grid>
                 </Item>
                 <Item>
-                <Button
-                  variant="contained"
-                  onClick={async () => {
-                    setStatusEnvio("enviando");
-                    const username = "admin";
-                    const password = "speed12345";
-                    const token = btoa(`${username}:${password}`);
-                    fetch("http://192.168.13.217:1880/numeroplaca", {
-                      method: "POST",
-                      headers: { Authorization: "Basic " + token },
-                      body: JSON.stringify(lacre),
-                    })
-                      .then((response) => response.json())
-                      .then((data) => {
-                        console.log(data);
-                        console.log(data.status);
-                        if (data.status === "sucess") {
-                          setSeverity("success");
-                          setLacre("");
-                          setImagemBase64(undefined);
-                          setImagemSelecionada(undefined);
-                          setOpen(true);
-                          setMensagemEnvio(data.message);
-                          setErroEnvio(undefined);
-                          handleFetchResult(data);
-                        } else {
+                  <Button
+                    variant="contained"
+                    disabled={statusEnvio === "enviando"}
+                    onClick={async () => {
+                      setStatusEnvio("enviando");
+                      const username = "admin";
+                      const password = "speed12345";
+                      const token = btoa(`${username}:${password}`);
+                      fetch("http://192.168.13.217:1880/numeroplaca", {
+                        method: "POST",
+                        headers: { Authorization: "Basic " + token },
+                        body: JSON.stringify(lacre),
+                      })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          console.log(data);
+                          console.log(data.status);
+                          if (data.status === "sucess") {
+                            setSeverity("success");
+                            setLacre("");
+                            setImagemBase64(undefined);
+                            setImagemSelecionada(undefined);
+                            setOpen(true);
+                            setMensagemEnvio(data.message);
+                            setErroEnvio(undefined);
+                            handleFetchResult(data);
+                          } else {
+                            setSeverity("error");
+                            setOpen(true);
+                            setMensagemEnvio(data.message);
+                            setStatusEnvio("erro");
+                            setErroEnvio(undefined);
+                            handleFetchResult(null);
+                          }
+                        })
+                        .catch((error) => {
+                          console.error(error);
                           setSeverity("error");
                           setOpen(true);
-                          setMensagemEnvio(data.message);
                           setStatusEnvio("erro");
-                          setErroEnvio(undefined);
-                          handleFetchResult(null);
-                        }
-                      })
-                      .catch((error) => {
-                        console.error(error);
-                        setSeverity("error");
-                        setOpen(true);
-                        setStatusEnvio("erro");
-                        setErroEnvio(error.message);
-                      });
-                  }}
-                >
-                  {statusEnvio === "enviando"
-                    ? "ENVIANDO..."
-                    : statusEnvio === "pronto"
-                    ? "ENVIADO"
-                    : statusEnvio === "erro"
-                    ? "REENVIAR"
-                    : "SEND"}{" "}
-                </Button>
+                          setErroEnvio(error.message);
+                        });
+                    }}
+                  >
+                    {statusEnvio === "enviando"
+                      ? "ENVIANDO..."
+                      : statusEnvio === "pronto"
+                      ? "ENVIADO"
+                      : statusEnvio === "erro"
+                      ? "REENVIAR"
+                      : "SEND"}{" "}
+                  </Button>
                 </Item>
-
-            </CardContent>
-          </Stack>
-        </Card>
+              </CardContent>
+            </Stack>
+          </Card>
         </Box>
       </LayoutBaseDePagina>
     </>

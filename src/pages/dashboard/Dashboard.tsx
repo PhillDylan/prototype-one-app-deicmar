@@ -27,6 +27,7 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
+import { Link } from "react-router-dom";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -409,6 +410,13 @@ export const Dashboard = () => {
                 </Collapse>
               </Grid>
               <Grid item>
+
+              <Link to="/checklist">
+                  <Button size="large" variant="contained">
+                    VOLTAR
+                  </Button>
+                </Link>
+
                 <Button
                   size="large"
                   variant="contained"

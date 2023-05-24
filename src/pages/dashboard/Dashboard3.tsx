@@ -1,4 +1,4 @@
-import { Divider, Grid, useTheme, Button, Paper, styled, Box } from "@mui/material";
+import { Divider, Grid, useTheme, Button, Paper, styled, Box, IconButton, AlertTitle, Alert, AlertColor, Typography } from "@mui/material";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import React, { useEffect, useState } from "react";
 import { green, red } from "@mui/material/colors";
@@ -11,6 +11,10 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
+
+import Collapse from "@mui/material/Collapse";
+import CloseIcon from "@mui/icons-material/Close";
+
 
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -30,6 +34,13 @@ export const Dashboard3 = () => {
   const [redChecked, setRedChecked] = useState(true);
   const mensagemFetch = useSelector((state: RootState) => state.mensagemFetch);
   const dadosFetch = useSelector((state: RootState) => state.dadosFetch);
+  const [alertSeverity, setAlertSeverity] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
+  const [erroEnvio, setErroEnvio] = useState<string | undefined>();
+  const [mensagemEnvio, setMensagemEnvio] = useState("");
+
 
 
   useEffect(() => {
@@ -66,7 +77,7 @@ export const Dashboard3 = () => {
       var hora: any = "item.agora";
       var guide: any = "item.guide";
       var tipolacre: any = "item.tipoLacre";
-      var agendamento: any = "item.numeroAgendamento";
+      var agendamento: any = "item.numeroAgendamento3";
       var numerolacre: any = item.lacre;
       var nomeoperador: any = "item.nomeUsuario";
       var idoperador: any = "item.cpf";
@@ -89,31 +100,77 @@ export const Dashboard3 = () => {
       },
       body: formData,
     };
-    fetch("http://192.168.13.214:1882/cadastrolacre", options)
+    
+    fetch("http://192.168.13.217:1880/cadastrolacre", options)
       .then((response) => {
         if (response.ok) {
-          // Manipule a resposta aqui
           return response.json();
         } else {
-          // Trate erros de resposta aqui
           throw new Error("Erro ao enviar");
         }
       })
       .then((data) => {
-        const result = document.getElementById("result");
-        if (result) {
-          result.textContent = JSON.stringify(data);
+        if (data.agendamento && data.agendamento.message === "Agendamento cadastrado") {
+          setAlertSeverity("success");
+          setOpen(true);
+          setMensagemEnvio(data.message);
+          setErroEnvio(undefined);
+          handleFetchResult(true, data.agendamento.message);
+        } else {
+          setAlertSeverity("error");
+          setSeverity("error");
+          setOpen(true);
+          setMensagemEnvio(data.message);
+          setErroEnvio(undefined);
+          handleFetchResult(false, data.agendamento.message);
         }
+        setAlertMessage(data.agendamento.message);
         console.log(data);
       })
       .catch((error) => {
-        // Trate erros de rede aqui
+        setAlertSeverity("error");
+        setAlertMessage(error.message);
+        console.error(error);
+        setSeverity("error");
+        setOpen(true);
+        setErroEnvio(error.message);
       });
   };
 
+  const alertSuccess = (message: string) => {
+    alert(`Sucesso: ${message}`);
+  };
+
+  const alertError = (error: string) => {
+    alert(`Erro: ${error}`);
+  };
+
+
+
+  
+  const handleFetchResult = (sucesso: boolean, mensagem: string) => {
+    setMensagemEnvio(mensagem);
+    setSeverity(sucesso ? "success" : "error");
+    setErroEnvio(sucesso ? undefined : mensagem);
+  };
+
+
   return (
     <>
-      <LayoutBaseDePagina titulo={`CHECKLIST`} barraDeFerramentas={<></>}>
+
+
+     
+     <LayoutBaseDePagina titulo={`CHECKLIST`} barraDeFerramentas={
+          <Card>
+            <CardContent>
+              <h3>AGENDAMENTO N° {dadosFetch.data.agendamento.id_agendamento}</h3>
+              <h3>SERVIÇO: {dadosFetch.data.agendamento.tipo_serviço}</h3>
+            </CardContent>
+          </Card>
+        }>
+
+
+
         <Divider />
         <Box height="100vh" >
         <Card variant="outlined" sx={{ height: '100%', }}>
@@ -182,6 +239,32 @@ export const Dashboard3 = () => {
 
               <Item>
               <Grid item>
+              <Collapse in={open}>
+                  <Alert
+                    variant="filled"
+                    severity={severity}
+                    action={
+                      <IconButton
+                        aria-label="close"
+                        color="inherit"
+                        size="small"
+                        onClick={() => {
+                          setOpen(false);
+                        }}
+                      >
+                        {" "}
+                        <CloseIcon fontSize="inherit" />{" "}
+                      </IconButton>
+                    }
+                    sx={{ mb: 2 }}
+                  >
+                    <AlertTitle>{severity}</AlertTitle>
+                    {erroEnvio || mensagemEnvio}
+                  </Alert>
+                </Collapse>
+
+
+
                 <Button
                   variant="contained"
                   size="large"
@@ -216,3 +299,5 @@ export const Dashboard3 = () => {
     </>
   );
 };
+
+export default Dashboard3;
