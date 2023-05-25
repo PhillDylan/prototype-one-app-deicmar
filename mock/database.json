@@ -1,0 +1,13 @@
+{
+    "pessoas": [
+        {
+            "id": 1,
+            "nome": "Phillip",
+            "sobrenome": "Dylan"
+        }
+    ],
+
+    "auth": {
+        "accessToken": "aaaaaaa.bbbbbbbb.ccccccc"
+    }
+}

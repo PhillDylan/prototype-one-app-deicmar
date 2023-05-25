@@ -141,7 +141,7 @@ export const Dashboard = () => {
     const username = "admin";
     const password = "speed12345";
     const token = btoa(`${username}:${password}`);
-    fetch("http://192.168.13.217:1880/api/groupsid", {
+    fetch("http://192.168.13.217:1880/ultimosagendamentos", { //api/groupsid
       method: "GET",
       headers: { Authorization: "Basic " + token },
     })

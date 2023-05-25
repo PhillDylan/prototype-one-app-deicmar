@@ -228,14 +228,6 @@ export const Dashboard2 = () => {
                     >
                       <Typography variant="h6">Lista de Lacres</Typography>
                       <Box sx={{ flexGrow: 1 }} />
-                      <IconButton
-                        color="primary"
-                        edge="end"
-                        aria-label="add"
-                        onClick={adicionarItem}
-                      >
-                        <AddIcon />
-                      </IconButton>
                     </ListSubheader>
                   }
                 >
