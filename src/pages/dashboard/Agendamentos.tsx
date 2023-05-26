@@ -57,18 +57,6 @@ export const ListagemDeCidades: React.FC = () => {
 
   const handleConfirmDelete = (id: number) => {
     setIsDialogOpen(false);
-
-    CidadesService.deleteById(id)
-      .then(result => {
-        if (result instanceof Error) {
-          alert(result.message);
-        } else {
-          setRows(oldRows => [
-            ...oldRows.filter(oldRow => oldRow.id !== id),
-          ]);
-          alert('Registro apagado com sucesso!');
-        }
-      });
   };
 
   return (
