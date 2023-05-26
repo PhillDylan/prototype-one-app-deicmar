@@ -1,4 +1,21 @@
-import { Divider, Grid, useTheme, Button, Paper, styled, Box, IconButton, AlertTitle, Alert, AlertColor, Typography } from "@mui/material";
+import {
+  Divider,
+  Grid,
+  useTheme,
+  Button,
+  Paper,
+  styled,
+  Box,
+  IconButton,
+  AlertTitle,
+  Alert,
+  AlertColor,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+} from "@mui/material";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import React, { useEffect, useState } from "react";
 import { green, red } from "@mui/material/colors";
@@ -14,8 +31,6 @@ import Stack from "@mui/material/Stack";
 
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
-
-
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -41,8 +56,6 @@ export const Dashboard3 = () => {
   const [erroEnvio, setErroEnvio] = useState<string | undefined>();
   const [mensagemEnvio, setMensagemEnvio] = useState("");
 
-
-
   useEffect(() => {
     if (listaItens.length > 0 || dadosFetch?.data.obj.container === false) {
       setGreenChecked(true);
@@ -54,6 +67,9 @@ export const Dashboard3 = () => {
   }, [listaItens, dadosFetch]);
 
   const enviarDados = () => {
+    // Restante do código do envio dos dados
+    // ...
+
     // Restante do código do envio dos dados
     const base64ToBlob: any = (base64String: any, mimeType: any) => {
       const byteCharacters: any = atob(base64String);
@@ -77,7 +93,7 @@ export const Dashboard3 = () => {
       var hora: any = "item.agora";
       var guide: any = "item.guide";
       var tipolacre: any = "item.tipoLacre";
-      var agendamento: any = "item.numeroAgendamento3";
+      var agendamento: any = "item.numeroAgendamento4";
       var numerolacre: any = item.lacre;
       var nomeoperador: any = "item.nomeUsuario";
       var idoperador: any = "item.cpf";
@@ -136,110 +152,107 @@ export const Dashboard3 = () => {
         setErroEnvio(error.message);
       });
   };
-
-  const alertSuccess = (message: string) => {
-    alert(`Sucesso: ${message}`);
-  };
-
-  const alertError = (error: string) => {
-    alert(`Erro: ${error}`);
-  };
-
-
-
   
+
   const handleFetchResult = (sucesso: boolean, mensagem: string) => {
     setMensagemEnvio(mensagem);
     setSeverity(sucesso ? "success" : "error");
     setErroEnvio(sucesso ? undefined : mensagem);
   };
 
-
   return (
     <>
-
-
-     
-     <LayoutBaseDePagina titulo={`CHECKLIST`} barraDeFerramentas={
+      <LayoutBaseDePagina
+        titulo={`CHECKLIST`}
+        barraDeFerramentas={
           <Card>
             <CardContent>
               <h3>AGENDAMENTO N° {dadosFetch.data.agendamento.id_agendamento}</h3>
               <h3>SERVIÇO: {dadosFetch.data.agendamento.tipo_serviço}</h3>
             </CardContent>
           </Card>
-        }>
-
-
-
+        }
+      >
         <Divider />
-        <Box height="100vh" >
-        <Card variant="outlined" sx={{ height: '100%', }}>
-
-          <Stack spacing={5}>
-            <CardContent>
-              <Item>
-              {dadosFetch !== null ? (
-                  dadosFetch.data.obj.container === true ? (
-                    <Grid item sx={{ display: { xs: 'block', md: 'block' } }}>
-                      {/* Conteúdo do Grid */}
+        <Box height="100vh">
+          <Card variant="outlined" sx={{ height: "100%" }}>
+            <Stack spacing={7}>
+              <CardContent>
+                <List>
+                  <ListItem>
+                    <ListItemText primary="Status" />
+                    <ListItemText primary="Tipo" />
+                    <ListItemText primary="Ação" />
+                  </ListItem>
+  
+                  <Divider />
+  
+                  <ListItem>
+                    {dadosFetch !== null && dadosFetch.data.obj.container === true ? (
+                      <>
+                        <ListItemIcon>
+                          <Checkbox
+                            {...label}
+                            checked={greenChecked}
+                            disabled={greenChecked}
+                            sx={{
+                              color: green[800],
+                              "&.Mui-checked": { color: green[600] },
+                            }}
+                          />
+                        </ListItemIcon>
+                        <ListItemIcon>
+                          <Checkbox
+                            {...label}
+                            checked={redChecked}
+                            disabled={redChecked}
+                            sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary="LACRE" />
+                        <ListItemIcon>
+                          <Link to="/cadastro-lacre">
+                            <Button variant="contained">ADD</Button>
+                          </Link>
+                        </ListItemIcon>
+                      </>
+                    ) : null}
+                  </ListItem>
+  
+                  <Divider />
+  
+                  <ListItem>
+                    <ListItemIcon>
                       <Checkbox
                         {...label}
-                        checked={greenChecked}
-                        disabled={greenChecked}
+                        checked={mensagemFetch === true || dadosFetch?.data.face === true}
+                        disabled={mensagemFetch === true || dadosFetch?.data.face === true}
                         sx={{
                           color: green[800],
                           "&.Mui-checked": { color: green[600] },
                         }}
                       />
+                    </ListItemIcon>
+                    <ListItemIcon>
                       <Checkbox
                         {...label}
-                        checked={redChecked}
-                        disabled={redChecked}
+                        checked={mensagemFetch === false && dadosFetch?.data.face === false}
+                        disabled={mensagemFetch === false || dadosFetch?.data.face === false}
                         sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
                       />
-                      <span>LACRE</span>
-                      <Link to="/cadastro-lacre">
-                        <Button variant="contained">ADD</Button>
+                    </ListItemIcon>
+                    <ListItemText primary="Cadastro Facial" />
+                    <ListItemIcon>
+                      <Link to="/cadastro-facial">
+                        <Button variant="contained" disabled={mensagemFetch === true || dadosFetch?.data.face === true}>
+                          ADD
+                        </Button>
                       </Link>
-                    </Grid>
-                  ) : null
-                ) : null}
-            </Item>
-
-
-
-            <Item>
-              <Grid item>
-                <Checkbox
-                  {...label}
-                  checked={mensagemFetch === true || dadosFetch?.data.face === true}
-                  disabled={mensagemFetch === true || dadosFetch?.data.face === true}
-                  sx={{
-                    color: green[800],
-                    "&.Mui-checked": { color: green[600] },
-                  }}
-                />
-                <Checkbox
-                  {...label}
-                  checked={mensagemFetch === false && dadosFetch?.data.face === false}
-                  disabled={mensagemFetch === false || dadosFetch?.data.face === false}
-                  sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
-                />
-                <span>Cadastro Facial</span>
-                <Link to="/cadastro-facial">
-                  <Button variant="contained" disabled={mensagemFetch === true || dadosFetch?.data.face === true}>
-                    ADD
-                  </Button>
-                </Link>
-              </Grid>
-              </Item>
-
-
-
-
-              <Item>
-              <Grid item>
-              <Collapse in={open}>
+                    </ListItemIcon>
+                  </ListItem>
+                </List>
+  
+                <Collapse in={open}>
                   <Alert
                     variant="filled"
                     severity={severity}
@@ -252,8 +265,7 @@ export const Dashboard3 = () => {
                           setOpen(false);
                         }}
                       >
-                        {" "}
-                        <CloseIcon fontSize="inherit" />{" "}
+                        <CloseIcon fontSize="inherit" />
                       </IconButton>
                     }
                     sx={{ mb: 2 }}
@@ -262,9 +274,7 @@ export const Dashboard3 = () => {
                     {erroEnvio || mensagemEnvio}
                   </Alert>
                 </Collapse>
-
-
-
+  
                 <Button
                   variant="contained"
                   size="large"
@@ -273,31 +283,13 @@ export const Dashboard3 = () => {
                 >
                   ENVIAR
                 </Button>
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => {
-                    console.log('enviarDados', dadosFetch);
-                    console.log('id_agendamento', dadosFetch.data.agendamento.id_agendamento);
-                    console.log('tipo_serviço', dadosFetch.data.agendamento.tipo_serviço);
-                    console.log('face', dadosFetch.data.face);
-                    console.log('container', dadosFetch.data.obj.container);
-                  }}
-
-                >
-                  ENVIAR
-                </Button>
-              </Grid>
-              </Item>
-
-
-        </CardContent>
-        </Stack>
-        </Card>
+              </CardContent>
+            </Stack>
+          </Card>
         </Box>
       </LayoutBaseDePagina>
     </>
   );
-};
+};  
 
 export default Dashboard3;

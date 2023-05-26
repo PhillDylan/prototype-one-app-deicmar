@@ -11,19 +11,19 @@ import store from "./pages/dashboard/store";
 export const App = () => {
   return (
     <AuthProvider>
-    <Provider store={store}>
-    <AppThemeProvider>
-      <Login>
-      <AppDrawerProvider>
-        <BrowserRouter>
-          <MenuLateral>
-            <AppRoutes />
-          </MenuLateral>
-        </BrowserRouter>
-      </AppDrawerProvider>
-      </Login>
-    </AppThemeProvider>
-    </Provider>
+      <Provider store={store}>
+        <AppThemeProvider>
+          <Login>
+            <AppDrawerProvider>
+              <BrowserRouter>
+                <MenuLateral>
+                  <AppRoutes />
+                </MenuLateral>
+              </BrowserRouter>
+            </AppDrawerProvider>
+          </Login>
+        </AppThemeProvider>
+      </Provider>
     </AuthProvider>
   );
 };

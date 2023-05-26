@@ -3,12 +3,23 @@
 
 export const Enviroment = {
     
-
-    LIMITE_DE_LINHAS: 10,
-
-    INPUT_DE_BUSCA: 'Pesquisar...',
+ /**
+   * Define a quantidade de linhas a ser carregada por padrão nas listagens
+   */
+ LIMITE_DE_LINHAS: 5,
+ /**
+  * Placeholder exibido nas inputs
+  */
+ INPUT_DE_BUSCA: 'Pesquisar...',
+ /**
+  * Texto exibido quando nenhum registro é encontrado em uma listagem
+  */
+ LISTAGEM_VAZIA: 'Nenhum registro encontrado.',
+ /**
+  * Url base de consultado dos dados dessa aplicação
+  */
 
     URL_BASE: 'http://localhost:333',
-    URL_BASE_FINAL:'http://192.168.13.217:1880' 
+    /*URL_BASE:'http://192.168.13.217:1880' */
     
 }

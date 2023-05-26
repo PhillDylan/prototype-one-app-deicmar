@@ -26,6 +26,8 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
+import { useNavigate } from "react-router-dom";
+
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -38,6 +40,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export const Dashboard5 = () => {
+  const navigate = useNavigate();
+
   const [open, setOpen] = React.useState(false);
   const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
   const [erroEnvio, setErroEnvio] = useState<string | undefined>();
@@ -147,6 +151,7 @@ export const Dashboard5 = () => {
                             setMensagemEnvio(data.message);
                             setErroEnvio(undefined);
                             handleFetchResult(data);
+                            navigate("/checklist");
                           } else {
                             setSeverity("error");
                             setOpen(true);

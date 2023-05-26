@@ -28,6 +28,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -41,6 +42,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
+
   const [open, setOpen] = React.useState(false);
   const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
   const [erroEnvio, setErroEnvio] = useState<string | undefined>();
@@ -460,6 +463,7 @@ export const Dashboard = () => {
                           setMensagemEnvio(data.message);
                           setErroEnvio(undefined);
                           handleFetchResult(true, data.message);
+                          navigate("/checklist");
                         } else {
                           setSeverity("error");
                           setOpen(true);

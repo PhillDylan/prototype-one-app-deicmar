@@ -1,5 +1,5 @@
 import { Api } from '../axios-config';
-
+import bcrypt from 'bcryptjs';
 
 interface IAuth {
   accessToken: string;
@@ -7,7 +7,9 @@ interface IAuth {
 
 const auth = async (email: string, password: string): Promise<IAuth | Error> => {
   try {
-    const { data } = await Api.get('/auth', { data: { email, password } });
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash da senha usando o bcrypt
+
+    const { data } = await Api.get('/auth', { data: { email, password: hashedPassword } });
 
     if (data) {
       return data;
