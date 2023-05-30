@@ -144,9 +144,10 @@ export const Dashboard = () => {
     const username = "admin";
     const password = "speed12345";
     const token = btoa(`${username}:${password}`);
-    fetch("http://192.168.13.217:1880/ultimosagendamentos", { //api/groupsid
-      method: "GET",
+    fetch("http://192.168.13.217:1880/numeroagendamento", { //api/groupsid
+      method: "POST",
       headers: { Authorization: "Basic " + token },
+      body: "item.numeroAgendamento4"
     })
       .then((response) => response.json())
       .then((data) => {
@@ -236,7 +237,7 @@ export const Dashboard = () => {
     <>
       <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
         <Divider />
-        <Box height="100vh" >
+        <Box height="200vh" >
         <Card variant="outlined" sx={{ height: '100%', }}>
 
           <Stack spacing={5}>

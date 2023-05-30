@@ -1,31 +1,42 @@
 import { Enviroment } from '../../../environment';
 import { Api } from '../axios-config';
 
-
 export interface IListagemCidade {
   id: number;
-  nome: string;
+  numerodolacre: string;
 }
+
+
 
 export interface IDetalheCidade {
   id: number;
-  nome: string;
+  nome: string; // Adicione a propriedade 'nome' aqui
+  data: {
+    data: string;
+    hora: string;
+    idagendamento: string;
+    numerodolacre: string;
+    tipo_lacre: string;
+  };
 }
 
+
+
 type TCidadesComTotalCount = {
-  data: IListagemCidade[];
+  data: IDetalheCidade[];
   totalCount: number;
 }
 
+
 const getAll = async (page = 1, filter = '', id = ''): Promise<TCidadesComTotalCount | Error> => {
   try {
-    const urlRelativa = `/cidades?_page=${page}&_limit=${Enviroment.LIMITE_DE_LINHAS}&nome_like=${filter}&id_like=${id}`;
+    const urlRelativa = `/ultimosagendamentos`;
 
     const { data, headers } = await Api.get(urlRelativa);
 
     if (data) {
       return {
-        data,
+        data: data.response, // Ajuste aqui para acessar o array de objetos 'response'
         totalCount: Number(headers['x-total-count'] || Enviroment.LIMITE_DE_LINHAS),
       };
     }
@@ -37,9 +48,10 @@ const getAll = async (page = 1, filter = '', id = ''): Promise<TCidadesComTotalC
   }
 };
 
+
 const getById = async (id: number): Promise<IDetalheCidade | Error> => {
   try {
-    const { data } = await Api.get(`/cidades/${id}`);
+    const { data } = await Api.get(`/ultimosagendamentos`);
     console.log('data',data);
     if (data) {
       return data;
@@ -54,7 +66,7 @@ const getById = async (id: number): Promise<IDetalheCidade | Error> => {
 
 const create = async (dados: Omit<IDetalheCidade, 'id'>): Promise<number | Error> => {
   try {
-    const { data } = await Api.post<IDetalheCidade>('/cidades', dados);
+    const { data } = await Api.post<IDetalheCidade>('/ultimosagendamentos', dados);
 
     if (data) {
       return data.id;
@@ -67,29 +79,10 @@ const create = async (dados: Omit<IDetalheCidade, 'id'>): Promise<number | Error
   }
 };
 
-/*const updateById = async (id: number, dados: IDetalheCidade): Promise<void | Error> => {
-  try {
-    await Api.put(`/cidades/${id}`, dados);
-  } catch (error) {
-    console.error(error);
-    return new Error((error as { message: string }).message || 'Erro ao atualizar o registro.');
-  }
-};*/
-/*
-const deleteById = async (id: number): Promise<void | Error> => {
-  try {
-    await Api.delete(`/cidades/${id}`);
-  } catch (error) {
-    console.error(error);
-    return new Error((error as { message: string }).message || 'Erro ao apagar o registro.');
-  }
-};
-*/
+
 
 export const CidadesService = {
   getAll,
   create,
   getById,
-  //updateById,
- // deleteById,
 };

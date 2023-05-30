@@ -13,7 +13,7 @@ export const App = () => {
     <AuthProvider>
       <Provider store={store}>
         <AppThemeProvider>
-          <Login>
+          <Login> {}
             <AppDrawerProvider>
               <BrowserRouter>
                 <MenuLateral>
@@ -27,5 +27,3 @@ export const App = () => {
     </AuthProvider>
   );
 };
-
-

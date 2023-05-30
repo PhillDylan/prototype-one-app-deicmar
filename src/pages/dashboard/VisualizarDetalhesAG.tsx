@@ -9,7 +9,6 @@ import { Enviroment } from '../../shared/environment';
 import { useDebounce } from '../../shared/hooks';
 
 
-
 export const ListagemDeCidades: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { debounce } = useDebounce();
@@ -61,6 +60,15 @@ export const ListagemDeCidades: React.FC = () => {
   return (
     <LayoutBaseDePagina
       titulo='Listagem Checklist'
+      barraDeFerramentas={
+        <FerramentasDaListagem
+          mostrarInputBusca
+          textoDaBusca={busca}
+          textoBotaoNovo='Nova'
+          aoClicarEmNovo={() => navigate('/cidades/detalhe/nova')}
+          aoMudarTextoDeBusca={texto => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
+        />
+      }
     >
       <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto' }}>
         <Table>

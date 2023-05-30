@@ -90,10 +90,10 @@ export const Dashboard3 = () => {
       const buffer = item.imagem;
       const blobImage = base64ToBlob(buffer, "image/jpeg");
       const file = new File([blobImage], "imagem.jpg", { type: "image/jpeg" });
-      var hora: any = "item.agora";
+      var hora: any = new Date().toISOString();
       var guide: any = "item.guide";
-      var tipolacre: any = "item.tipoLacre";
-      var agendamento: any = "item.numeroAgendamento4";
+      var tipolacre: any = "NORMAL";
+      var agendamento: any = dadosFetch.data.agendamento.id_agendamento;
       var numerolacre: any = item.lacre;
       var nomeoperador: any = "item.nomeUsuario";
       var idoperador: any = "item.cpf";

@@ -134,7 +134,7 @@ export const Dashboard2 = () => {
     <>
       <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>
         <Divider />
-        <Box height="100vh" >
+        <Box height="200vh" >
         <Card variant="outlined" sx={{ height: '100%', }}>
           <Stack spacing={5}>
             <CardContent>
