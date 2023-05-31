@@ -8,12 +8,15 @@ import { LayoutBaseDePagina } from '../../shared/layouts';
 import { Enviroment } from '../../shared/environment';
 import { useDebounce } from '../../shared/hooks';
 import { useTheme } from '@mui/material/styles'; // Importe o useTheme
+import { useDispatch } from 'react-redux';
+
+
 
 export const ListagemDeCidades: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { debounce } = useDebounce();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [rows, setRows] = useState<IListagemCidade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -23,7 +26,6 @@ export const ListagemDeCidades: React.FC = () => {
   const busca = useMemo(() => {
     return searchParams.get('busca') || '';
   }, [searchParams]);
-
   const pagina = useMemo(() => {
     return Number(searchParams.get('pagina') || '1');
   }, [searchParams]);
@@ -51,6 +53,13 @@ export const ListagemDeCidades: React.FC = () => {
   const handleDelete = (id: number) => {
     setDeleteItemId(id);
     setIsDialogOpen(true);
+  };
+
+  const handleEdit = (idagendamento: string) => {
+    dispatch({ type: 'SET_ID_AGENDAMENTO', payload: idagendamento }); // Adicione essa linha
+
+     // Navegar para o path desejado
+     navigate(`/cidades/detalhe/${idagendamento}`);
   };
 
   const handleConfirmDelete = (id: number) => {
@@ -100,7 +109,7 @@ export const ListagemDeCidades: React.FC = () => {
                     : 'linear-gradient(to right, #282828, #434343)',
                   color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
                 }}>
-                  <IconButton size="small" onClick={() => navigate(`/cidades/detalhe/${row.id}`)}>
+                  <IconButton size="small" onClick={() => handleEdit(row.idagendamento)}>
                     <Icon>edit</Icon>
                   </IconButton>
                 </TableCell>

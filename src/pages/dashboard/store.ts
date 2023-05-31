@@ -4,7 +4,8 @@ import { createStore } from 'redux';
 interface AppState {
   listaItens: { lacre: string; imagem: Buffer }[];
   mensagemFetch: boolean | null;
-  dadosFetch: any; // Substitua "any" pelo tipo correto dos dados retornados
+  dadosFetch: any;
+  idAgendamento: string | null; // Adicione essa propriedade
 }
 
 
@@ -12,6 +13,7 @@ const initialState: AppState = {
   listaItens: [],
   mensagemFetch: false,
   dadosFetch: null, // Adicione essa linha com um valor inicial apropriado
+  idAgendamento: null, // Adicione essa propriedade
 };
 
 
@@ -38,8 +40,15 @@ interface SetDadosFetchAction {
   payload: any; // Substitua "any" pelo tipo correto dos dados retornados
 }
 
+const SET_ID_AGENDAMENTO = 'SET_ID_AGENDAMENTO';
+
+interface SetIdAgendamentoAction {
+  type: typeof SET_ID_AGENDAMENTO;
+  payload: string;
+}
+
 // Dentro do bloco de definição de AppActionTypes
-type AppActionTypes = SetListaItensAction | SetMensagemFetchAction | SetDadosFetchAction;
+type AppActionTypes = SetListaItensAction | SetMensagemFetchAction | SetDadosFetchAction | SetIdAgendamentoAction;
 
 
 // Defina o reducer
@@ -50,16 +59,20 @@ const reducer = (state: AppState = initialState, action: AppActionTypes): AppSta
         ...state,
         listaItens: action.payload,
       };
-      // Dentro do bloco do switch do reducer
-      case SET_DADOS_FETCH:
-        return {
-          ...state,
-          dadosFetch: action.payload,
-        };
+    case SET_DADOS_FETCH:
+      return {
+        ...state,
+        dadosFetch: action.payload,
+      };
     case SET_MENSAGEM_FETCH:
       return {
         ...state,
         mensagemFetch: action.payload,
+      };
+    case SET_ID_AGENDAMENTO:
+      return {
+        ...state,
+        idAgendamento: action.payload,
       };
     default:
       return state;
