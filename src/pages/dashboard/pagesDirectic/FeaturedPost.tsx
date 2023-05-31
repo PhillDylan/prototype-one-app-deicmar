@@ -31,7 +31,16 @@ export default function FeaturedPost(props: FeaturedPostProps) {
   return (
     <Grid item xs={12} md={12} lg={24} xl={48}>
       <CardActionArea component="a" href="" onClick={handleClick}>
-        <Card sx={{ display: 'flex', backgroundColor: theme.palette.background.paper }}>
+        <Card  sx={{
+            display: 'flex',
+            backgroundColor: theme.palette.background.paper,
+            // Adicione esta parte para aplicar o gradiente invertido
+            background:
+              theme.palette.mode !== 'dark'
+                ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
+                : 'linear-gradient(to right, #282828, #434343)',
+            color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
+          }}>
           <CardContent sx={{ flex: 1 }}>
             <Typography component="h2" variant="h5">
               {post.title}

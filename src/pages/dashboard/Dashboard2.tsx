@@ -36,7 +36,23 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   textAlign: "center",
   color: theme.palette.text.secondary,
+  backgroundImage: `linear-gradient(to right, ${
+    theme.palette.mode === "dark" ? "#434343" : "#FDFBFB"
+  }, ${theme.palette.mode === "dark" ? "#282828" : "#EBEDEE"})`,
 }));
+
+
+
+const CardWithGradient = styled(Card)(({ theme }) => ({
+  height: '100%',
+  ...(theme.palette.mode !== 'dark' && {
+    background: 'linear-gradient(to right, #EBEDEE, #FDFBFB 90%)',
+  }),
+  ...(theme.palette.mode === 'dark' && {
+    background: 'linear-gradient(to right, #282828, #434343 90%)',
+  }),
+}));
+
 
 export const Dashboard2 = () => {
   const [lacre, setLacre] = useState("");
@@ -120,6 +136,11 @@ export const Dashboard2 = () => {
     // Restante do código...
     const novoItem = { lacre, imagem: imagemSelecionadaBase64 };
     dispatch({ type: "SET_LISTA_ITENS", payload: [...listaItens, novoItem] }); // Atualizar o estado do Redux com o novo item
+    // Resetar o lacre e a imagem selecionada
+    setLacre("");
+    setImagemSelecionada(undefined);
+    setImagemSelecionadaBase64(undefined);
+    setImage(undefined);
   };
 
   const removerItem = (index: number) => {
@@ -135,7 +156,7 @@ export const Dashboard2 = () => {
       <LayoutBaseDePagina titulo="Cadastro Lacre" barraDeFerramentas={<></>}>
         <Divider />
         <Box height="200vh" >
-        <Card variant="outlined" sx={{ height: '100%', }}>
+        <CardWithGradient variant="outlined">
           <Stack spacing={5}>
             <CardContent>
               <Item>
@@ -190,6 +211,7 @@ export const Dashboard2 = () => {
                   startIcon={<SaveIcon />}
                   variant="contained"
                   onClick={adicionarItem}
+                  disabled={!lacre || !imagemSelecionada} // Desabilitar o botão quando não houver valor no lacre ou imagem selecionada
                 >
                   SALVAR
                 </LoadingButton>
@@ -256,7 +278,7 @@ export const Dashboard2 = () => {
               </Item>
             </CardContent>
           </Stack>
-        </Card>
+          </CardWithGradient>
         </Box>
       </LayoutBaseDePagina>
     </>

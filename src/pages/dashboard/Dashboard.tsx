@@ -37,6 +37,21 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   textAlign: "center",
   color: theme.palette.text.secondary,
+  backgroundImage: `linear-gradient(to right, ${
+    theme.palette.mode === "dark" ? "#434343" : "#FDFBFB"
+  }, ${theme.palette.mode === "dark" ? "#282828" : "#EBEDEE"})`,
+}));
+
+
+
+const CardWithGradient = styled(Card)(({ theme }) => ({
+  height: '100%',
+  ...(theme.palette.mode !== 'dark' && {
+    background: 'linear-gradient(to right, #EBEDEE, #FDFBFB 90%)',
+  }),
+  ...(theme.palette.mode === 'dark' && {
+    background: 'linear-gradient(to right, #282828, #434343 90%)',
+  }),
 }));
 
 
@@ -147,7 +162,8 @@ export const Dashboard = () => {
     fetch("http://192.168.13.217:1880/numeroagendamento", { //api/groupsid
       method: "POST",
       headers: { Authorization: "Basic " + token },
-      body: "item.numeroAgendamento4"
+      body: '187454'
+
     })
       .then((response) => response.json())
       .then((data) => {
@@ -238,7 +254,7 @@ export const Dashboard = () => {
       <LayoutBaseDePagina titulo="Cadastro Facial" barraDeFerramentas={<></>}>
         <Divider />
         <Box height="200vh" >
-        <Card variant="outlined" sx={{ height: '100%', }}>
+        <CardWithGradient>
 
           <Stack spacing={5}>
             <CardContent>
@@ -495,7 +511,7 @@ export const Dashboard = () => {
           </Item>
           </CardContent>
           </Stack>
-          </Card>
+          </CardWithGradient>
           </Box>
       </LayoutBaseDePagina>
     </>

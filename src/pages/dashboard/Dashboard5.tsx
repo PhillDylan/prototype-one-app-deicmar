@@ -27,9 +27,12 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f2f2f2",
@@ -37,7 +40,25 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   textAlign: "center",
   color: theme.palette.text.secondary,
+  ...(theme.palette.mode !== "dark" && {
+    background: 'linear-gradient(to right, #FDFBFB, #EBEDEE 70%)',
+  }),
+  ...(theme.palette.mode === "dark" && {
+    background: 'linear-gradient(to right, #434343, #282828 70%)',
+  }),
 }));
+
+const CardWithGradient = styled(Card)(({ theme }) => ({
+  height: '150%',
+  ...(theme.palette.mode !== 'dark' && {
+    background: 'linear-gradient(to right, #EBEDEE, #FDFBFB 90%)',
+  }),
+  ...(theme.palette.mode === 'dark' && {
+    background: 'linear-gradient(to right, #282828, #434343 90%)',
+  }),
+}));
+
+
 
 export const Dashboard5 = () => {
   const navigate = useNavigate();
@@ -63,10 +84,24 @@ export const Dashboard5 = () => {
   >();
 
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleFetchResult = (mensagem: any) => {
     dispatch({ type: "SET_DADOS_FETCH", payload: mensagem });
   };
+
+
+  useEffect(() => {
+    const resetCache = () => {
+      dispatch({ type: "SET_LISTA_ITENS", payload: [] });
+      dispatch({ type: "SET_MENSAGEM_FETCH", payload: false });
+      dispatch({ type: "SET_DADOS_FETCH", payload: null });
+    };
+
+    if (location.pathname === "/agendamento2") {
+      resetCache();
+    }
+  }, [location.pathname, dispatch]);
 
   const [lacre, setLacre] = useState("");
   const theme = useTheme();
@@ -77,7 +112,7 @@ export const Dashboard5 = () => {
         barraDeFerramentas={<></>}
       >
         <Box height="100vh">
-          <Card sx={{ height: "150%" }}>
+        <CardWithGradient sx={{ height: '150%' }}>
             <Stack spacing={5}>
               <CardContent>
                 <Item>
@@ -181,7 +216,7 @@ export const Dashboard5 = () => {
                 </Item>
               </CardContent>
             </Stack>
-          </Card>
+            </CardWithGradient>
         </Box>
       </LayoutBaseDePagina>
     </>

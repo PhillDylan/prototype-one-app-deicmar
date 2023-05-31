@@ -7,8 +7,7 @@ import { FerramentasDaListagem } from '../../shared/components';
 import { LayoutBaseDePagina } from '../../shared/layouts';
 import { Enviroment } from '../../shared/environment';
 import { useDebounce } from '../../shared/hooks';
-
-
+import { useTheme } from '@mui/material/styles'; // Importe o useTheme
 
 export const ListagemDeCidades: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,7 +19,7 @@ export const ListagemDeCidades: React.FC = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
-
+  const theme = useTheme(); // Obtenha o tema atual
   const busca = useMemo(() => {
     return searchParams.get('busca') || '';
   }, [searchParams]);
@@ -43,7 +42,7 @@ export const ListagemDeCidades: React.FC = () => {
             console.log(result);
 
             setTotalCount(result.totalCount);
-            setRows(result.data.map(item => ({ id: item.id, numerodolacre: item.data.numerodolacre })));
+            setRows(result.data.map(item => ({ id: item.id, idagendamento: item.idagendamento, idoperador: item.idoperador })));
           }
         });
     });
@@ -66,19 +65,61 @@ export const ListagemDeCidades: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell width={100}>Ações</TableCell>
-              <TableCell>Numero</TableCell>
+              <TableCell width={100} sx={{
+                background: theme.palette.mode !== 'dark'
+                  ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
+                  : 'linear-gradient(to right, #282828, #434343)',
+                color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
+              }}>
+                Ações
+              </TableCell>
+              <TableCell sx={{
+                background: theme.palette.mode !== 'dark'
+                  ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
+                  : 'linear-gradient(to right, #282828, #434343)',
+                color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
+              }}>
+                ID Agendamento
+              </TableCell>
+              <TableCell sx={{
+                background: theme.palette.mode !== 'dark'
+                  ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
+                  : 'linear-gradient(to right, #282828, #434343)',
+                color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
+              }}>
+                ID Operador
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map(row => (
               <TableRow key={row.id}>
-                <TableCell>
+                <TableCell sx={{
+                  background: theme.palette.mode !== 'dark'
+                    ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
+                    : 'linear-gradient(to right, #282828, #434343)',
+                  color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
+                }}>
                   <IconButton size="small" onClick={() => navigate(`/cidades/detalhe/${row.id}`)}>
                     <Icon>edit</Icon>
                   </IconButton>
                 </TableCell>
-                <TableCell>{row.numerodolacre}</TableCell>
+                <TableCell sx={{
+                  background: theme.palette.mode !== 'dark'
+                    ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
+                    : 'linear-gradient(to right, #282828, #434343)',
+                  color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
+                }}>
+                  {row.idagendamento}
+                </TableCell>
+                <TableCell sx={{
+                  background: theme.palette.mode !== 'dark'
+                    ? 'linear-gradient(to right, #DDE2E5, #FDFBFB)'
+                    : 'linear-gradient(to right, #282828, #434343)',
+                  color: theme.palette.mode === 'dark' ? '#FFFFFF' : 'inherit',
+                }}>
+                  {row.idoperador}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -29,20 +29,41 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#ffffff",
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(2),
   textAlign: "center",
   color: theme.palette.text.secondary,
+  backgroundImage: `linear-gradient(to right, ${
+    theme.palette.mode === "dark" ? "#434343" : "#FDFBFB"
+  }, ${theme.palette.mode === "dark" ? "#282828" : "#EBEDEE"})`,
 }));
 
+const CardWithGradient = styled(Card)(({ theme }) => ({
+  height: '100%',
+  ...(theme.palette.mode !== 'dark' && {
+    background: 'linear-gradient(to right, #EBEDEE, #FDFBFB 90%)',
+  }),
+  ...(theme.palette.mode === 'dark' && {
+    background: 'linear-gradient(to right, #282828, #434343 90%)',
+  }),
+}));
+
+
 export const Dashboard3 = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const theme = useTheme();
   const listaItens = useSelector((state: RootState) => state.listaItens); // Obter o estado da store Redux
   const [greenChecked, setGreenChecked] = useState(false);
@@ -56,15 +77,21 @@ export const Dashboard3 = () => {
   const [erroEnvio, setErroEnvio] = useState<string | undefined>();
   const [mensagemEnvio, setMensagemEnvio] = useState("");
 
-  useEffect(() => {
-    if (listaItens.length > 0 || dadosFetch?.data.obj.container === false) {
+   useEffect(() => {
+    if (listaItens.length > 0 || (dadosFetch && dadosFetch.data.obj.container === false)) {
       setGreenChecked(true);
       setRedChecked(false);
     } else {
       setGreenChecked(false);
       setRedChecked(true);
     }
-  }, [listaItens, dadosFetch]);
+
+    // Verificar se dadosFetch é null ou undefined
+    if (!dadosFetch) {
+      navigate('/agendamento2', { replace: true });
+      return;
+    }
+  }, [listaItens, dadosFetch, navigate]);
 
   const enviarDados = () => {
     // Restante do código do envio dos dados
@@ -85,27 +112,43 @@ export const Dashboard3 = () => {
       }
       return new Blob(byteArrays, { type: mimeType });
     };
-    var formData = new FormData();
-    listaItens.forEach((item: { lacre: string; imagem: Buffer }) => {
-      const buffer = item.imagem;
-      const blobImage = base64ToBlob(buffer, "image/jpeg");
-      const file = new File([blobImage], "imagem.jpg", { type: "image/jpeg" });
-      var hora: any = new Date().toISOString();
-      var guide: any = "item.guide";
-      var tipolacre: any = "NORMAL";
-      var agendamento: any = dadosFetch.data.agendamento.id_agendamento;
-      var numerolacre: any = item.lacre;
-      var nomeoperador: any = "item.nomeUsuario";
-      var idoperador: any = "item.cpf";
-      formData.append("file", file);
-      formData.append("string", hora);
-      formData.append("string", guide);
-      formData.append("string", tipolacre);
-      formData.append("string", agendamento);
-      formData.append("string", numerolacre);
-      formData.append("string", nomeoperador);
-      formData.append("string", idoperador);
-    });
+    // Verificar se dadosFetch.data.obj.container é falso
+  const sendNullValues = !dadosFetch?.data.obj.container;
+  var hora: any = new Date().toISOString()
+  // Criar um objeto vazio para enviar como null
+
+  var formData = new FormData();
+  listaItens.forEach((item: { lacre: string; imagem: Buffer }) => {
+    const buffer = item.imagem;
+    const blobImage = base64ToBlob(buffer, "image/jpeg");
+    const file = new File([blobImage], "imagem.jpg", { type: "image/jpeg" });
+    var guide: any = sendNullValues ? 'null' : "item.guide";
+    var tipolacre: any = sendNullValues ? 'null' : "NORMAL";
+    var agendamento: any = sendNullValues ? 'null' : dadosFetch?.data.agendamento.id_agendamento;
+    var numerolacre: any = sendNullValues ? 'null' : item.lacre;
+    var nomeoperador: any = sendNullValues ? 'null' : "item.nomeUsuario";
+    var idoperador: any = sendNullValues ? 'null' : "item.cpf";
+    formData.append("file", file);
+    formData.append("string", hora);
+    formData.append("string", guide);
+    formData.append("string", tipolacre);
+    formData.append("string", agendamento);
+    formData.append("string", numerolacre);
+    formData.append("string", nomeoperador);
+    formData.append("string", idoperador);
+  });
+  const nullObject = [
+    hora,"item.guide","NORMAL",dadosFetch?.data.agendamento.id_agendamento,"null","item.nomeUsuario","item.cpf",
+  ];
+
+// Se dadosFetch.data.obj.container for falso, enviar o objeto nullObject
+if (sendNullValues) {
+  for (let i = 0; i < nullObject.length; i++) {
+    formData.append("string", String(nullObject[i]));
+  }
+}
+
+
     const username: any = "admin";
     const password: any = "speed12345"; // substitua isso pela senha descriptografada
     const token: any = btoa(`${username}:${password}`);
@@ -119,6 +162,7 @@ export const Dashboard3 = () => {
     
     fetch("http://192.168.13.217:1880/cadastrolacre", options)
       .then((response) => {
+        console.log(response)
         if (response.ok) {
           return response.json();
         } else {
@@ -127,11 +171,7 @@ export const Dashboard3 = () => {
       })
       .then((data) => {
         if (data.agendamento && data.agendamento.message === "Agendamento cadastrado") {
-          setAlertSeverity("success");
-          setOpen(true);
-          setMensagemEnvio(data.message);
-          setErroEnvio(undefined);
-          handleFetchResult(true, data.agendamento.message);
+          navigate('/agendamento2');
         } else {
           setAlertSeverity("error");
           setSeverity("error");
@@ -165,19 +205,19 @@ export const Dashboard3 = () => {
       <LayoutBaseDePagina
         titulo={`CHECKLIST`}
         barraDeFerramentas={
-          <Card>
+          <CardWithGradient>
             <CardContent>
-              <h3>AGENDAMENTO N° {dadosFetch.data.agendamento.id_agendamento}</h3>
-              <h3>SERVIÇO: {dadosFetch.data.agendamento.tipo_serviço}</h3>
+              <h3>AGENDAMENTO N° {dadosFetch?.data.agendamento.id_agendamento}</h3>
+              <h3>SERVIÇO: {dadosFetch?.data.agendamento.tipo_serviço}</h3>
             </CardContent>
-          </Card>
+          </CardWithGradient>
         }
       >
         <Divider />
         <Box height="100vh">
-          <Card variant="outlined" sx={{ height: "100%" }}>
+          <CardWithGradient>
             <Stack spacing={7}>
-              <CardContent>
+            <CardContent sx={{ textAlign: 'center' }}>
                 <List>
                   <ListItem>
                     <ListItemText primary="Status" />
@@ -188,7 +228,7 @@ export const Dashboard3 = () => {
                   <Divider />
   
                   <ListItem>
-                    {dadosFetch !== null && dadosFetch.data.obj.container === true ? (
+                    {dadosFetch !== null && dadosFetch?.data.obj.container === true ? (
                       <>
                         <ListItemIcon>
                           <Checkbox
@@ -274,6 +314,11 @@ export const Dashboard3 = () => {
                     {erroEnvio || mensagemEnvio}
                   </Alert>
                 </Collapse>
+                <Link to="/agendamento2">
+                  <Button size="large" variant="contained">
+                    VOLTAR
+                  </Button>
+                </Link>
   
                 <Button
                   variant="contained"
@@ -285,7 +330,7 @@ export const Dashboard3 = () => {
                 </Button>
               </CardContent>
             </Stack>
-          </Card>
+          </CardWithGradient>
         </Box>
       </LayoutBaseDePagina>
     </>

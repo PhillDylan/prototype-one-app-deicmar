@@ -3,18 +3,20 @@ import { Api } from '../axios-config';
 
 export interface IListagemCidade {
   id: number;
-  numerodolacre: string;
+  idagendamento: string;
+  idoperador?: string;
 }
+
 
 
 
 export interface IDetalheCidade {
   id: number;
-  nome: string; // Adicione a propriedade 'nome' aqui
+  idagendamento: string; // Adicione a propriedade 'nome' aqui
+  idoperador: string; // Adicione a propriedade 'nome' aqui
   data: {
     data: string;
     hora: string;
-    idagendamento: string;
     numerodolacre: string;
     tipo_lacre: string;
   };

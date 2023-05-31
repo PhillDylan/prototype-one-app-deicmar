@@ -17,6 +17,19 @@ import Avatar from "@mui/material/Avatar";
 import { useAppDrawerContext, useAppThemeContext, useAuthContext } from "../../contexts";
 import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
 
+import { styled } from '@mui/system';
+
+const DrawerWithGradient = styled(Drawer)(({ theme }) => ({
+  '& .MuiDrawer-paper': {
+    ...(theme.palette.mode !== 'dark' && {
+      background: 'linear-gradient(to left, #DDE2E5, #FDFBFB 90%)',
+    }),
+    ...(theme.palette.mode === 'dark' && {
+      background: 'linear-gradient(to left, #282828, #434343 90%)',
+    }),
+  },
+}));
+
 interface IListItemLinkProps {
   to: string;
   icon: string;
@@ -66,7 +79,7 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
 
   return (
     <>
-      <Drawer
+      <DrawerWithGradient
         open={isDrawerOpen}
         variant={smDown ? "temporary" : "permanent"}
         onClose={toggleDrawerOpen}
@@ -131,7 +144,7 @@ export const MenuLateral: React.FC<IMenuLateral> = ({ children }) => {
             </nav>
           </Box>
         </Box>
-      </Drawer>
+        </DrawerWithGradient>
 
       <Box height="100vh" marginLeft={smDown ? 0 : theme.spacing(28)}>
         {children}

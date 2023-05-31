@@ -45,9 +45,16 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({
           "&::-webkit-scrollbar-thumb": {
             borderRadius: 8,
             border: "2px solid",
-            borderColor: theme.palette.mode === "dark" ? "" : "#E7EBF0",
+            borderColor:
+              theme.palette.mode === "dark" ? "" : "#E7EBF0",
             backgroundColor: "rgba(0 0 0 / 0.2)",
           },
+          // Adicione esta parte para aplicar o gradiente invertido nos boxes
+          background:
+            theme.palette.mode !== "dark"
+              ? "linear-gradient(to left, #DDE2E5, #FDFBFB 70%)"
+              : "linear-gradient(to left, #282828, #434343 70%)",
+          color: theme.palette.mode === "dark" ? "#FFFFFF" : "inherit",
         },
       }}
     >
