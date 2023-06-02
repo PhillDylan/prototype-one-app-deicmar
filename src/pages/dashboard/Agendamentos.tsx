@@ -49,6 +49,7 @@ export const ListagemDeCidades: React.FC = () => {
         });
     });
   }, [busca, pagina]);
+  
 
   const handleDelete = (id: number) => {
     setDeleteItemId(id);
