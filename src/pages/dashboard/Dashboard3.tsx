@@ -15,6 +15,11 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
+  TableCell,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
 } from "@mui/material";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import React, { useEffect, useState } from "react";
@@ -224,80 +229,65 @@ if (sendNullValues) {
         <Box height="100vh">
           <CardWithGradient>
             <Stack spacing={7}>
-            <CardContent sx={{ textAlign: 'center' }}>
-                <List>
-                  <ListItem>
-                    <ListItemText primary="Status" />
-                    <ListItemText primary="Tipo" />
-                    <ListItemText primary="Ação" />
-                  </ListItem>
-  
-                  <Divider />
-  
-                  <ListItem>
-                    {dadosFetch !== null && dadosFetch?.data[numero].container === true ? (
-                      <>
-                        <ListItemIcon>
-                          <Checkbox
-                            {...label}
-                            checked={greenChecked}
-                            disabled={greenChecked}
-                            sx={{
-                              color: green[800],
-                              "&.Mui-checked": { color: green[600] },
-                            }}
-                          />
-                        </ListItemIcon>
-                        <ListItemIcon>
-                          <Checkbox
-                            {...label}
-                            checked={redChecked}
-                            disabled={redChecked}
-                            sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText primary="LACRE" />
-                        <ListItemIcon>
+              <CardContent sx={{ textAlign: 'center' }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Tipo</TableCell>
+                      <TableCell>Ação</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>
+                        {dadosFetch !== null && dadosFetch?.data[numero].container === true ? (
+                          redChecked ? (
+                            <Button variant="outlined" disabled style={{ color: 'orange' }}>
+                              PENDENTE
+                            </Button>
+                          ) : (
+                            <Button variant="outlined" disabled style={{ color: 'green' }}>
+                              PRONTO
+                            </Button>
+                          )
+                        ) : null}
+                      </TableCell>
+                      <TableCell>LACRE</TableCell>
+                      <TableCell>
+                        <Box marginLeft="auto">
                           <Link to="/cadastro-lacre">
-                            <Button variant="contained">ADD</Button>
+                            <Button variant="contained">ADICIONAR</Button>
                           </Link>
-                        </ListItemIcon>
-                      </>
-                    ) : null}
-                  </ListItem>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
   
-                  <Divider />
-  
-                  <ListItem>
-                    <ListItemIcon>
-                      <Checkbox
-                        {...label}
-                        checked={mensagemFetch === true || dadosFetch?.data[numero].face === true}
-                        disabled={mensagemFetch === true || dadosFetch?.data[numero].face === true}
-                        sx={{
-                          color: green[800],
-                          "&.Mui-checked": { color: green[600] },
-                        }}
-                      />
-                    </ListItemIcon>
-                    <ListItemIcon>
-                      <Checkbox
-                        {...label}
-                        checked={mensagemFetch === false && dadosFetch?.data[numero].face === false}
-                        disabled={mensagemFetch === false || dadosFetch?.data[numero].face === false}
-                        sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
-                      />
-                    </ListItemIcon>
-                    <ListItemText primary="Cadastro Facial" />
-                    <ListItemIcon>
-                      <Link to="/cadastro-facial">
-                        <Button variant="contained" disabled={mensagemFetch === true || dadosFetch?.data[numero].face === true}>
-                          ADD
-                        </Button>
-                      </Link>
-                    </ListItemIcon>
-                  </ListItem>
-                </List>
+                    <TableRow>
+                      <TableCell>
+                        {mensagemFetch === true || dadosFetch?.data[numero].face === true ? (
+                          <Button variant="outlined" disabled style={{ color: 'green' }}>
+                            PRONTO
+                          </Button>
+                        ) : (
+                          <Button variant="outlined" disabled style={{ color: 'orange' }}>
+                            PENDENTE
+                          </Button>
+                        )}
+                      </TableCell>
+                      <TableCell>Cadastro Facial</TableCell>
+                      <TableCell>
+                        <Box marginLeft="auto">
+                          <Link to="/cadastro-facial">
+                            <Button variant="contained" disabled={mensagemFetch === true || dadosFetch?.data[numero].face === true}>
+                              ADICIONAR
+                            </Button>
+                          </Link>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
   
                 <Collapse in={open}>
                   <Alert
@@ -342,6 +332,11 @@ if (sendNullValues) {
       </LayoutBaseDePagina>
     </>
   );
+  
+  
+  
+  
+  
 };  
 
 export default Dashboard3;

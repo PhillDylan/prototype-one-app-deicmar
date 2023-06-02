@@ -9,6 +9,7 @@ interface IAuth {
   idoperador: string;
   message: string;
   nomeoperador: string;
+  first_access: string;
 }
 
 

@@ -16,6 +16,7 @@ const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
 const COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
 const COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
 const COOKIE_KEY__GATE = 'APP_GATE';
+const COOKIE_KEY__FIRST_ACCESS = 'APP_FIRST_ACCESS';
 
 interface IAuthProviderProps {
   children: React.ReactNode;
@@ -32,6 +33,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     const idOperador = Cookies.get(COOKIE_KEY__ID_OPERADOR);
     const message = Cookies.get(COOKIE_KEY__MESSAGE);
     const nomeOperador = Cookies.get(COOKIE_KEY__NOME_OPERADOR);
+    const firstAccess = Cookies.get(COOKIE_KEY__FIRST_ACCESS);
 
     if (accessToken) {
       setAccessToken(accessToken);
@@ -56,6 +58,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
       Cookies.set(COOKIE_KEY__ID_OPERADOR, result.idoperador);
       Cookies.set(COOKIE_KEY__MESSAGE, result.message);
       Cookies.set(COOKIE_KEY__NOME_OPERADOR, result.nomeoperador);
+      Cookies.set(COOKIE_KEY__FIRST_ACCESS, result.first_access);
 
       setAccessToken(result.accessToken);
       setIdOperador(result.idoperador);
@@ -70,6 +73,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     Cookies.remove(COOKIE_KEY__MESSAGE);
     Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
     Cookies.remove(COOKIE_KEY__GATE);
+    Cookies.remove(COOKIE_KEY__FIRST_ACCESS);
 
     setAccessToken(undefined);
     setIdOperador(undefined);

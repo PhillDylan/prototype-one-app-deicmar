@@ -160,11 +160,9 @@ export const Dashboard = () => {
     const username = "admin";
     const password = "speed12345";
     const token = btoa(`${username}:${password}`);
-    fetch(`${Enviroment.URL_BASE}/numeroagendamento`, { //api/groupsid
-      method: "POST",
+    fetch(`${Enviroment.URL_BASE}/api/groupsid`, { //api/groupsid
+      method: "GET",
       headers: { Authorization: "Basic " + token },
-      body: '187454'
-
     })
       .then((response) => response.json())
       .then((data) => {

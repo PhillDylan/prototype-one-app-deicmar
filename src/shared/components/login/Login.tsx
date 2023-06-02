@@ -6,6 +6,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useAuthContext } from '../../contexts';
 import React from 'react';
+import Cookies from 'js-cookie';
+import { CadastroSenha } from './CadastroSenha';
 
 
 const loginSchema = yup.object().shape({
@@ -30,6 +32,8 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
   const [erroEnvio, setErroEnvio] = useState<string | undefined>();
   const [mensagemEnvio, setMensagemEnvio] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [redirectToNewPassword, setRedirectToNewPassword] = useState(false);
+
 
   const handleFetchResult = (sucesso: boolean, mensagem: string) => {
     setMensagemEnvio(mensagem);
@@ -40,20 +44,27 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
 
   const handleSubmit = () => {
     setIsLoading(true);
-
+  
     loginSchema
       .validate({ email, password }, { abortEarly: false })
-      .then(dadosValidados => {
+      .then((dadosValidados) => {
+
+  
         login(dadosValidados.email, dadosValidados.password)
           .then(() => {
             setIsLoading(false);
-            handleFetchResult(false, 'Login Incorreto')
+            handleFetchResult(false, 'Login Incorreto');
+            if (Cookies.get('APP_FIRST_ACCESS') === 'true') {
+              setRedirectToNewPassword(true);
+              setIsLoading(false);
+              return;
+            }
           });
       })
       .catch((errors: yup.ValidationError) => {
         setIsLoading(false);
-
-        errors.inner.forEach(error => {
+  
+        errors.inner.forEach((error) => {
           if (error.path === 'email') {
             setEmailError(error.message);
           } else if (error.path === 'password') {
@@ -62,7 +73,11 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
         });
       });
   };
-
+  
+  if (redirectToNewPassword) {
+    return <CadastroSenha email={email} />;
+  }
+  
 
   if (isAuthenticated) return (
     <>{children}</>
