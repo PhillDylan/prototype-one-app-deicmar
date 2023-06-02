@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Box, Button, Card, CardActions, CardContent, CircularProgress, TextField, Typography } from '@mui/material';
+import { Alert, AlertColor, Box, AlertTitle ,Button, Card, CardActions, CardContent, CircularProgress, Collapse, Grid, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import * as yup from 'yup';
-
+import CloseIcon from "@mui/icons-material/Close";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useAuthContext } from '../../contexts';
+import React from 'react';
 
 
 const loginSchema = yup.object().shape({
@@ -22,7 +25,18 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
   const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [open, setOpen] = React.useState(false);
+  const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
+  const [erroEnvio, setErroEnvio] = useState<string | undefined>();
+  const [mensagemEnvio, setMensagemEnvio] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
+  const handleFetchResult = (sucesso: boolean, mensagem: string) => {
+    setMensagemEnvio(mensagem);
+    setSeverity(sucesso ? "success" : "error");
+    setErroEnvio(sucesso ? undefined : mensagem);
+    setOpen(true)
+  };
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -33,6 +47,7 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
         login(dadosValidados.email, dadosValidados.password)
           .then(() => {
             setIsLoading(false);
+            handleFetchResult(false, 'Login Incorreto')
           });
       })
       .catch((errors: yup.ValidationError) => {
@@ -76,17 +91,54 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
             <TextField
               fullWidth
               label='Senha'
-              type='password'
+              type={showPassword ? 'text' : 'password'}
               value={password}
               disabled={isLoading}
               error={!!passwordError}
               helperText={passwordError}
               onKeyDown={() => setPasswordError('')}
               onChange={e => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+
+            <Collapse in={open}>
+              <Alert
+                variant="filled"
+                severity={severity}
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setOpen(false);
+                    }}
+                  >
+                    {" "}
+                    <CloseIcon fontSize="inherit" />{" "}
+                  </IconButton>
+                }
+                sx={{ mb: 2 }}
+              >
+                <AlertTitle>{severity}</AlertTitle>
+                {erroEnvio || mensagemEnvio}
+              </Alert>
+            </Collapse>
           </Box>
         </CardContent>
         <CardActions>
+
           <Box width='100%' display='flex' justifyContent='center'>
 
             <Button

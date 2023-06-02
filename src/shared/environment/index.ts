@@ -20,6 +20,6 @@ export const Enviroment = {
   */
 
    /* URL_BASE: 'http://localhost:3333' */
-    URL_BASE:'http://192.168.13.217:1880'
+    URL_BASE:'http://192.168.13.224:1880'
     
 }

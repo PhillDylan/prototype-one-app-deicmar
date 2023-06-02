@@ -28,6 +28,8 @@ import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { Enviroment } from "../../shared/environment";
+import Cookies from 'js-cookie';
 
 
 
@@ -49,7 +51,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const CardWithGradient = styled(Card)(({ theme }) => ({
-  height: '150%',
+  height: '100%',
   ...(theme.palette.mode !== 'dark' && {
     background: 'linear-gradient(to right, #EBEDEE, #FDFBFB 90%)',
   }),
@@ -86,6 +88,19 @@ export const Dashboard5 = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
+  
+  const COOKIE_KEY__GATE = 'APP_GATE';
+
+
+  useEffect(() => {
+
+    const tipoGate = Cookies.get(COOKIE_KEY__GATE);
+
+    if (!tipoGate) {
+      navigate("/direct")
+    }
+  }, [location.pathname, dispatch]);
+
   const handleFetchResult = (mensagem: any) => {
     dispatch({ type: "SET_DADOS_FETCH", payload: mensagem });
   };
@@ -112,25 +127,28 @@ export const Dashboard5 = () => {
         barraDeFerramentas={<></>}
       >
         <Box height="100vh">
-        <CardWithGradient sx={{ height: '150%' }}>
+        <CardWithGradient >
             <Stack spacing={5}>
               <CardContent>
                 <Item>
-                  <TextField
-                    fullWidth
-                    placeholder="AAA1A11"
-                    error={lacre.length < 3}
-                    required
-                    id="outlined-required"
-                    label={<Typography>Required</Typography>}
-                    value={lacre}
-                    InputLabelProps={{ shrink: true }}
-                    margin={"normal"}
-                    onChange={(event) => {
-                      setLacre(event.target.value);
-                    }}
-                    helperText={<Typography>Digite a placa</Typography>}
-                  />
+                <TextField
+                      fullWidth
+                      placeholder="AAA1A11"
+                      required
+                      id="outlined-required"
+                      label={<Typography>OBRIGATORIO</Typography>}
+                      value={lacre}
+                      InputLabelProps={{ shrink: true }}
+                      margin={"normal"}
+                      onChange={(event) => {
+                        const value = event.target.value.toUpperCase();
+                        if (value.length <= 9) { // Limita o número de caracteres em 7
+                          setLacre(value); // Atualiza o estado da placa
+                        }
+                      }}
+                      inputProps={{ maxLength: 8, style: { textTransform: 'uppercase', textAlign: 'center' } }}
+                      helperText={<Typography>Digite a placa</Typography>}
+                    />
                 </Item>
                 <Item>
                   <Grid item>
@@ -168,16 +186,18 @@ export const Dashboard5 = () => {
                       const username = "admin";
                       const password = "speed12345";
                       const token = btoa(`${username}:${password}`);
-                      fetch("http://192.168.13.217:1880/numeroplaca", {
+                      const gate = Cookies.get(COOKIE_KEY__GATE);
+                      console.log('entrou')
+                      fetch(`${Enviroment.URL_BASE}/numeroplaca`, {
                         method: "POST",
                         headers: { Authorization: "Basic " + token },
-                        body: JSON.stringify(lacre),
+                        body: JSON.stringify(`placa:${lacre}, gate:${gate}`),
                       })
                         .then((response) => response.json())
                         .then((data) => {
                           console.log(data);
                           console.log(data.status);
-                          if (data.status === "sucess") {
+                          if (data.status === "success") {
                             setSeverity("success");
                             setLacre("");
                             setImagemBase64(undefined);
@@ -211,7 +231,7 @@ export const Dashboard5 = () => {
                       ? "ENVIADO"
                       : statusEnvio === "erro"
                       ? "REENVIAR"
-                      : "SEND"}{" "}
+                      : "ENVIAR"}{" "}
                   </Button>
                 </Item>
               </CardContent>

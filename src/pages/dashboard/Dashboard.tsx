@@ -29,6 +29,7 @@ import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { Enviroment } from "../../shared/environment";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -159,7 +160,7 @@ export const Dashboard = () => {
     const username = "admin";
     const password = "speed12345";
     const token = btoa(`${username}:${password}`);
-    fetch("http://192.168.13.217:1880/numeroagendamento", { //api/groupsid
+    fetch(`${Enviroment.URL_BASE}/numeroagendamento`, { //api/groupsid
       method: "POST",
       headers: { Authorization: "Basic " + token },
       body: '187454'
@@ -320,15 +321,21 @@ export const Dashboard = () => {
                   required
                   InputLabelProps={{ shrink: true }}
                   id="outlined-required"
-                  label={<Typography>Required</Typography>}
+                  label={<Typography>OBRIGATORIO</Typography>}
                   margin={"normal"}
                   value={nome}
                   onChange={(event) => {
-                    setNome(event.target.value);
+                    setNome(event.target.value.toUpperCase()); // Converter o texto para caixa alta
                     setStatusEnvio("certo");
                   }}
                   helperText={<Typography>Digite o nome</Typography>}
+                  inputProps={{
+                    style: {
+                      textAlign: "center", // Centralizar o texto
+                    },
+                  }}
                 />
+
               </Grid>
               <Grid
                 item
@@ -341,16 +348,22 @@ export const Dashboard = () => {
                   error={sobrenome.length < 3}
                   required
                   id="outlined-required"
-                  label={<Typography>Required</Typography>}
+                  label={<Typography>OBRIGATORIO</Typography>}
                   value={sobrenome}
                   InputLabelProps={{ shrink: true }}
                   margin={"normal"}
                   onChange={(event) => {
-                    setSobrenome(event.target.value);
+                    setSobrenome(event.target.value.toUpperCase()); // Converter o texto para caixa alta
                     setStatusEnvio("certo");
                   }}
                   helperText={<Typography>Digite o Sobrenome</Typography>}
+                  inputProps={{
+                    style: {
+                      textAlign: "center", // Centralizar o texto
+                    },
+                  }}
                 />
+
               </Grid>
               <Grid
                 item
@@ -362,7 +375,7 @@ export const Dashboard = () => {
                   placeholder="00.000.000-00"
                   error={!ValidadorCPF(cpf)}
                   id="filled-number"
-                  label={<Typography>Required</Typography>}
+                  label={<Typography>OBRIGATORIO</Typography>}
                   type="tel"
                   InputLabelProps={{ shrink: true }}
                   value={cpf}
@@ -394,7 +407,9 @@ export const Dashboard = () => {
                     setCpf(formattedCPF);
                     setStatusEnvio("certo");
                   }}
-                  inputProps={{ maxLength: 14 }}
+                  inputProps={{ maxLength: 14, style: {
+                    textAlign: "center", // Centralizar o texto
+                  },}}
                   helperText={
                     !ValidadorCPF(cpf) ? (
                       <Typography>"Digite um CPF válido"</Typography>
@@ -402,6 +417,7 @@ export const Dashboard = () => {
                       <Typography>"Digite o CPF"</Typography>
                     )
                   }
+                  
                 />
               </Grid>
               <Grid item>
@@ -456,7 +472,7 @@ export const Dashboard = () => {
                     const password = "speed12345";
                     const token = btoa(`${username}:${password}`);
                     const cpfSemCaracteres = removeCaracteresCPF(cpf);
-                    fetch("http://192.168.13.217:1880/api/cadastro", {
+                    fetch(`${Enviroment.URL_BASE}/api/cadastro`, {
                       method: "POST",
                       headers: { Authorization: "Basic " + token },
                       body: JSON.stringify({
@@ -505,7 +521,7 @@ export const Dashboard = () => {
                     ? "ENVIADO"
                     : statusEnvio === "erro"
                     ? "REENVIAR"
-                    : "SEND"}
+                    : "ENVIAR"}
                 </Button>
               </Grid>
           </Item>

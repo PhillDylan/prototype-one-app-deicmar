@@ -23,6 +23,8 @@ import Checkbox from "@mui/material/Checkbox";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
 import { Link } from "react-router-dom";
+import Cookies from 'js-cookie';
+
 
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -35,6 +37,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
+import { Enviroment } from "../../shared/environment";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -76,9 +79,12 @@ export const Dashboard3 = () => {
   const [severity, setSeverity] = useState<AlertColor | undefined>(undefined);
   const [erroEnvio, setErroEnvio] = useState<string | undefined>();
   const [mensagemEnvio, setMensagemEnvio] = useState("");
+  const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
+  const COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+  const numero = 1
 
    useEffect(() => {
-    if (listaItens.length > 0 || (dadosFetch && dadosFetch.data.obj.container === false)) {
+    if (listaItens.length > 0 || (dadosFetch && dadosFetch.data[numero].container === false)) {
       setGreenChecked(true);
       setRedChecked(false);
     } else {
@@ -112,8 +118,9 @@ export const Dashboard3 = () => {
       }
       return new Blob(byteArrays, { type: mimeType });
     };
+
     // Verificar se dadosFetch.data.obj.container é falso
-  const sendNullValues = !dadosFetch?.data.obj.container;
+  const sendNullValues = !dadosFetch?.data[numero].container;
   var hora: any = new Date().toISOString()
   // Criar um objeto vazio para enviar como null
 
@@ -124,10 +131,10 @@ export const Dashboard3 = () => {
     const file = new File([blobImage], "imagem.jpg", { type: "image/jpeg" });
     var guide: any = sendNullValues ? 'null' : "item.guide";
     var tipolacre: any = sendNullValues ? 'null' : "NORMAL";
-    var agendamento: any = sendNullValues ? 'null' : dadosFetch?.data.agendamento.id_agendamento;
+    var agendamento: any = sendNullValues ? 'null' : dadosFetch?.data[numero].id;
     var numerolacre: any = sendNullValues ? 'null' : item.lacre;
-    var nomeoperador: any = sendNullValues ? 'null' : "item.nomeUsuario";
-    var idoperador: any = sendNullValues ? 'null' : "item.cpf";
+    var nomeoperador: any = sendNullValues ? 'null' : Cookies.get(COOKIE_KEY__NOME_OPERADOR);
+    var idoperador: any = sendNullValues ? 'null' : Cookies.get(COOKIE_KEY__ID_OPERADOR);
     formData.append("file", file);
     formData.append("string", hora);
     formData.append("string", guide);
@@ -138,7 +145,7 @@ export const Dashboard3 = () => {
     formData.append("string", idoperador);
   });
   const nullObject = [
-    hora,"item.guide","NORMAL",dadosFetch?.data.agendamento.id_agendamento,"null","item.nomeUsuario","item.cpf",
+    hora,"item.guide","NORMAL",dadosFetch?.data[numero].id_agendamento,"null",Cookies.get(COOKIE_KEY__NOME_OPERADOR),Cookies.get(COOKIE_KEY__ID_OPERADOR),
   ];
 
 // Se dadosFetch.data.obj.container for falso, enviar o objeto nullObject
@@ -160,7 +167,7 @@ if (sendNullValues) {
       body: formData,
     };
     
-    fetch("http://192.168.13.217:1880/cadastrolacre", options)
+    fetch(`${Enviroment.URL_BASE}/cadastrolacre`, options)
       .then((response) => {
         console.log(response)
         if (response.ok) {
@@ -207,8 +214,8 @@ if (sendNullValues) {
         barraDeFerramentas={
           <CardWithGradient>
             <CardContent>
-              <h3>AGENDAMENTO N° {dadosFetch?.data.agendamento.id_agendamento}</h3>
-              <h3>SERVIÇO: {dadosFetch?.data.agendamento.tipo_serviço}</h3>
+              <h3>AGENDAMENTO N° {dadosFetch?.data[numero].id}</h3>
+              <h3>SERVIÇO: {dadosFetch?.data[numero].data.cargo[0].service_name}</h3>
             </CardContent>
           </CardWithGradient>
         }
@@ -228,7 +235,7 @@ if (sendNullValues) {
                   <Divider />
   
                   <ListItem>
-                    {dadosFetch !== null && dadosFetch?.data.obj.container === true ? (
+                    {dadosFetch !== null && dadosFetch?.data[numero].container === true ? (
                       <>
                         <ListItemIcon>
                           <Checkbox
@@ -265,8 +272,8 @@ if (sendNullValues) {
                     <ListItemIcon>
                       <Checkbox
                         {...label}
-                        checked={mensagemFetch === true || dadosFetch?.data.face === true}
-                        disabled={mensagemFetch === true || dadosFetch?.data.face === true}
+                        checked={mensagemFetch === true || dadosFetch?.data[numero].face === true}
+                        disabled={mensagemFetch === true || dadosFetch?.data[numero].face === true}
                         sx={{
                           color: green[800],
                           "&.Mui-checked": { color: green[600] },
@@ -276,15 +283,15 @@ if (sendNullValues) {
                     <ListItemIcon>
                       <Checkbox
                         {...label}
-                        checked={mensagemFetch === false && dadosFetch?.data.face === false}
-                        disabled={mensagemFetch === false || dadosFetch?.data.face === false}
+                        checked={mensagemFetch === false && dadosFetch?.data[numero].face === false}
+                        disabled={mensagemFetch === false || dadosFetch?.data[numero].face === false}
                         sx={{ color: red[800], "&.Mui-checked": { color: red[600] } }}
                       />
                     </ListItemIcon>
                     <ListItemText primary="Cadastro Facial" />
                     <ListItemIcon>
                       <Link to="/cadastro-facial">
-                        <Button variant="contained" disabled={mensagemFetch === true || dadosFetch?.data.face === true}>
+                        <Button variant="contained" disabled={mensagemFetch === true || dadosFetch?.data[numero].face === true}>
                           ADD
                         </Button>
                       </Link>
@@ -324,7 +331,7 @@ if (sendNullValues) {
                   variant="contained"
                   size="large"
                   onClick={enviarDados}
-                  disabled={!greenChecked || (!mensagemFetch && dadosFetch?.data.face === false)}
+                  disabled={!greenChecked || (!mensagemFetch && dadosFetch?.data[numero].face === false)}
                 >
                   ENVIAR
                 </Button>

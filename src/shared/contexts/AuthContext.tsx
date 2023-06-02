@@ -15,6 +15,7 @@ const COOKIE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
 const COOKIE_KEY__ID_OPERADOR = 'APP_ID_OPERADOR';
 const COOKIE_KEY__MESSAGE = 'APP_MESSAGE';
 const COOKIE_KEY__NOME_OPERADOR = 'APP_NOME_OPERADOR';
+const COOKIE_KEY__GATE = 'APP_GATE';
 
 interface IAuthProviderProps {
   children: React.ReactNode;
@@ -68,6 +69,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     Cookies.remove(COOKIE_KEY__ID_OPERADOR);
     Cookies.remove(COOKIE_KEY__MESSAGE);
     Cookies.remove(COOKIE_KEY__NOME_OPERADOR);
+    Cookies.remove(COOKIE_KEY__GATE);
 
     setAccessToken(undefined);
     setIdOperador(undefined);

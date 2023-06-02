@@ -1,5 +1,6 @@
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { PhotoCamera } from "@mui/icons-material";
+import { Enviroment } from "../../shared/environment";
 import {
   Button,
   Divider,
@@ -191,20 +192,26 @@ export const Dashboard2 = () => {
                   )}
                 </Grid>
                 <TextField
-                  fullWidth
-                  placeholder="AMOSTRA123456789"
-                  error={lacre.length < 3}
-                  required
-                  id="outlined-required"
-                  label={<Typography>Required</Typography>}
-                  value={lacre}
-                  InputLabelProps={{ shrink: true }}
-                  margin={"normal"}
-                  onChange={(event) => {
-                    setLacre(event.target.value);
-                  }}
-                  helperText={<Typography>Digite o Lacre</Typography>}
-                />
+                    fullWidth
+                    placeholder="AMOSTRA123456789"
+                    error={lacre.length < 3}
+                    required
+                    id="outlined-required"
+                    label={<Typography>OBRIGATORIO</Typography>}
+                    value={lacre}
+                    InputLabelProps={{ shrink: true }}
+                    margin={"normal"}
+                    onChange={(event) => {
+                      setLacre(event.target.value.toUpperCase()); // Converter o texto para caixa alta
+                    }}
+                    helperText={<Typography>Digite o Lacre</Typography>}
+                    inputProps={{
+                      style: {
+                        textAlign: "center", // Centralizar o texto
+                        textTransform: "uppercase", // Converter o texto para caixa alta
+                      },
+                    }}
+                  />
                 <LoadingButton
                   loading={false}
                   loadingPosition="start"

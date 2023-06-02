@@ -7,6 +7,9 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LayoutBaseDePagina } from "../../../shared/layouts";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import FeaturedPost from "./FeaturedPost";
 
@@ -14,24 +17,27 @@ const currentDate = new Date();
 const month = currentDate.toLocaleString("default", { month: "short" });
 const day = currentDate.getDate();
 
+
 const featuredPosts = [
   {
-    title: "GATE IN",
+    title: "GATE ENTRADA",
     date: `${month} ${day}`,
-    description:
-      "AO SELECIONAR ESTE CAMPO VOCE SERA REDIRECIONADO PARA FAZER OS CHECKLIST DO GATE IN",
+    description: "",
     path: "/agendamento2",
     image: "",
     imageLabel: "",
+    gate: 'IN',
+    icon: <LoginIcon sx={{ width: '100%', height: '100%' }} />,
   },
   // ...
-  /*  {
-    title: 'Post title',
-    date: 'Nov 11',
-    description:
-      'This is a wider card with supporting text below as a natural lead-in to additional content.',
-      path: 'agendamento2'
-  },*/
+  {
+    title: 'GATE SAIDA',
+    date: `${month} ${day}`,
+    description: '',
+    path: '/agendamento2',
+    gate:'OUT',
+    icon: <LogoutIcon sx={{ width: '100%', height: '100%' }} />,
+  },
 ];
 
 // TODO remove, this demo shouldn't need to reset the theme.

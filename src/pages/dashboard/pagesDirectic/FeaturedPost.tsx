@@ -8,6 +8,7 @@ import CardMedia from '@mui/material/CardMedia';
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles'; // Importe o useTheme
+import Cookies from 'js-cookie';
 
 interface FeaturedPostProps {
   post: {
@@ -15,6 +16,8 @@ interface FeaturedPostProps {
     description: string;
     title: string;
     path: string; // Adicione a propriedade path ao post
+    gate: string;
+    icon: React.ReactNode; // Adicione a propriedade icon ao post
   };
 }
 
@@ -22,11 +25,15 @@ export default function FeaturedPost(props: FeaturedPostProps) {
   const { post } = props;
   const navigate = useNavigate(); // Importe o useNavigate
   const theme = useTheme(); // Obtenha o tema atual
+  const COOKIE_KEY__GATE = 'APP_GATE';
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault(); // Impede o comportamento padrão do link
     navigate(post.path); // Navegue para a rota definida em post.path
+    Cookies.set(COOKIE_KEY__GATE, post.gate );
+
   };
+
 
   return (
     <Grid item xs={12} md={12} lg={24} xl={48}>
@@ -56,7 +63,7 @@ export default function FeaturedPost(props: FeaturedPostProps) {
             </Typography>
           </CardContent>
           <CardMedia sx={{ width: 160 }}>
-            <AssignmentIcon sx={{ width: '100%', height: '100%' }} />
+            {post.icon}
           </CardMedia>
         </Card>
       </CardActionArea>
