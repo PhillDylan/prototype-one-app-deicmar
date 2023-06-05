@@ -229,11 +229,10 @@ if (sendNullValues) {
         <Divider />
         <Box height="100vh">
           <CardWithGradient>
-          <Stack spacing={0} sx={{ m: 0, width: '100%', padding: theme.spacing(1)}}>
-  <CardContent sx={{ textAlign: 'center', m: 0, width: '100%' }}>
-    <TableContainer component={Paper} variant="outlined" sx={{ m: 0, width: '100%' }}>
-      <Table >
-           
+          <Stack spacing={0} >
+            <CardContent sx={{ textAlign: 'center',  }}>
+              <TableContainer component={Paper} variant="outlined" sx={{ m: 0}}>
+                <Table >
                   <TableHead>
                     <TableRow>
                       <TableCell>Status</TableCell>
