@@ -105,6 +105,25 @@ export const Dashboard5 = () => {
     dispatch({ type: "SET_DADOS_FETCH", payload: mensagem });
   };
 
+  const handlePlacaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let value = event.target.value.toUpperCase();
+    
+    // Remove hífens e espaços em branco do valor inserido
+    value = value.replace(/-/g, '').replace(/\s/g, '');
+
+    if (value.length <= 8) { // Limita o número de caracteres em 8
+      if (/^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(value)) {
+        const formattedValue = value.slice(0, 3) + '-' + value.slice(3);
+        setLacre(formattedValue);
+      } else if (/^[A-Z]{3}[0-9]{4}$/.test(value)) {
+        const formattedValue = value.slice(0, 3) + '-' + value.slice(3);
+        setLacre(formattedValue);
+      } else {
+        setLacre(value);
+      }
+    }
+  };
+
 
   useEffect(() => {
     const resetCache = () => {
@@ -132,38 +151,18 @@ export const Dashboard5 = () => {
               <CardContent>
                 <Item>
                 <TextField
-
-
-  fullWidth
-  placeholder="AAA1A11 ou ABC-1234"
-  required
-  id="outlined-required"
-  label={<Typography>"OBRIGATORIO"</Typography>}
-  value={lacre}
-  InputLabelProps={{ shrink: true }}
-  margin={"normal"}
-  onChange={(event) => {
-    let value = event.target.value.toUpperCase();
-    setLacre(value);
-    
-    // Remove hífens e espaços em branco do valor inserido
-    value = value.replace(/-/g, '').replace(/\s/g, '');
-
-    if (value.length <= 8) { // Limita o número de caracteres em 8
-      if (/^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(value)) {
-        const formattedValue = value.slice(0, 3) + '-' + value.slice(3);
-        setLacre(formattedValue);
-      } else if (/^[A-Z]{3}[0-9]{4}$/.test(value)) {
-        const formattedValue = value.slice(0, 3) + '-' + value.slice(3);
-        setLacre(formattedValue);
-      }
-    }
-  }}
-  inputProps={{ maxLength: 8, style: { textTransform: 'uppercase', textAlign: 'center' } }}
-  helperText={<Typography>"Digite a placa"</Typography>}
-/>
-
-
+                  fullWidth
+                  placeholder="DIGITE A PLACA"
+                  required
+                  id="outlined-required"
+                  label={<Typography>"OBRIGATORIO"</Typography>}
+                  value={lacre}
+                  InputLabelProps={{ shrink: true }}
+                  margin={"normal"}
+                  onChange={handlePlacaChange}
+                  inputProps={{ maxLength: 8, style: { textTransform: 'uppercase', textAlign: 'center' } }}
+                  helperText={<Typography>Digite a placa</Typography>}
+                />
                 </Item>
                 <Item>
                   <Grid item>

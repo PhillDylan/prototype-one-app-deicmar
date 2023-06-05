@@ -106,6 +106,7 @@ export const Dashboard3 = () => {
   }, [listaItens, dadosFetch, navigate]);
 
   const enviarDados = () => {
+    console.log('dados',dadosFetch?.data[numero].id)
     // Restante do código do envio dos dados
     // ...
 
@@ -151,7 +152,7 @@ export const Dashboard3 = () => {
     formData.append("string", idoperador);
   });
   const nullObject = [
-    hora,"item.guide","NORMAL",dadosFetch?.data[numero].id_agendamento,"null",Cookies.get(COOKIE_KEY__NOME_OPERADOR),Cookies.get(COOKIE_KEY__ID_OPERADOR),
+    hora,"item.guide","NORMAL",dadosFetch?.data[numero].id,"null",Cookies.get(COOKIE_KEY__NOME_OPERADOR),Cookies.get(COOKIE_KEY__ID_OPERADOR),
   ];
 
 // Se dadosFetch.data.obj.container for falso, enviar o objeto nullObject
@@ -241,29 +242,30 @@ if (sendNullValues) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>
-                        {dadosFetch !== null && dadosFetch?.data[numero].container === true ? (
-                          redChecked ? (
-                            <Button variant="outlined" disabled style={{backgroundColor: 'orange', color: 'black' }}>
-                              PENDENTE
-                            </Button>
-                          ) : (
-                            <Button variant="outlined" disabled style={{ backgroundColor: 'green', color: 'white' }}>
-                              PRONTO
-                            </Button>
-                          )
-                        ) : null}
-                      </TableCell>
-                      <TableCell>LACRE</TableCell>
-                      <TableCell>
-                        <Box marginLeft="auto">
-                          <Link to="/cadastro-lacre">
-                            <Button variant="contained">CRIAR</Button>
-                          </Link>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
+                  {dadosFetch !== null && dadosFetch?.data[numero].container ? (
+  <TableRow>
+    <TableCell>
+      {redChecked ? (
+        <Button variant="outlined" disabled style={{ backgroundColor: 'orange', color: 'black' }}>
+          PENDENTE
+        </Button>
+      ) : (
+        <Button variant="outlined" disabled style={{ backgroundColor: 'green', color: 'white' }}>
+          PRONTO
+        </Button>
+      )}
+    </TableCell>
+    <TableCell>LACRE</TableCell>
+    <TableCell>
+      <Box marginLeft="auto">
+        <Link to="/cadastro-lacre">
+          <Button variant="contained">CRIAR</Button>
+        </Link>
+      </Box>
+    </TableCell>
+  </TableRow>
+) : null}
+
   
                     <TableRow>
                       <TableCell>
