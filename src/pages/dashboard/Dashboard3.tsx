@@ -20,6 +20,7 @@ import {
   TableHead,
   TableBody,
   TableRow,
+  TableContainer,
 } from "@mui/material";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import React, { useEffect, useState } from "react";
@@ -228,9 +229,11 @@ if (sendNullValues) {
         <Divider />
         <Box height="100vh">
           <CardWithGradient>
-            <Stack spacing={7}>
-              <CardContent sx={{ textAlign: 'center' }}>
-                <Table>
+          <Stack spacing={0} sx={{ m: 0, width: '100%', padding: theme.spacing(1)}}>
+  <CardContent sx={{ textAlign: 'center', m: 0, width: '100%' }}>
+    <TableContainer component={Paper} variant="outlined" sx={{ m: 0, width: '100%' }}>
+      <Table >
+           
                   <TableHead>
                     <TableRow>
                       <TableCell>Status</TableCell>
@@ -243,11 +246,11 @@ if (sendNullValues) {
                       <TableCell>
                         {dadosFetch !== null && dadosFetch?.data[numero].container === true ? (
                           redChecked ? (
-                            <Button variant="outlined" disabled style={{ color: 'orange' }}>
+                            <Button variant="outlined" disabled style={{backgroundColor: 'orange', color: 'black' }}>
                               PENDENTE
                             </Button>
                           ) : (
-                            <Button variant="outlined" disabled style={{ color: 'green' }}>
+                            <Button variant="outlined" disabled style={{ backgroundColor: 'green', color: 'white' }}>
                               PRONTO
                             </Button>
                           )
@@ -257,7 +260,7 @@ if (sendNullValues) {
                       <TableCell>
                         <Box marginLeft="auto">
                           <Link to="/cadastro-lacre">
-                            <Button variant="contained">ADICIONAR</Button>
+                            <Button variant="contained">CRIAR</Button>
                           </Link>
                         </Box>
                       </TableCell>
@@ -266,11 +269,11 @@ if (sendNullValues) {
                     <TableRow>
                       <TableCell>
                         {mensagemFetch === true || dadosFetch?.data[numero].face === true ? (
-                          <Button variant="outlined" disabled style={{ color: 'green' }}>
+                          <Button variant="outlined" disabled  style={{ backgroundColor: 'green', color: 'white' }}>
                             PRONTO
                           </Button>
                         ) : (
-                          <Button variant="outlined" disabled style={{ color: 'orange' }}>
+                          <Button variant="outlined" disabled style={{backgroundColor: 'orange', color: 'black' }}>
                             PENDENTE
                           </Button>
                         )}
@@ -280,7 +283,7 @@ if (sendNullValues) {
                         <Box marginLeft="auto">
                           <Link to="/cadastro-facial">
                             <Button variant="contained" disabled={mensagemFetch === true || dadosFetch?.data[numero].face === true}>
-                              ADICIONAR
+                              CRIAR
                             </Button>
                           </Link>
                         </Box>
@@ -288,7 +291,7 @@ if (sendNullValues) {
                     </TableRow>
                   </TableBody>
                 </Table>
-  
+                </TableContainer>
                 <Collapse in={open}>
                   <Alert
                     variant="filled"
